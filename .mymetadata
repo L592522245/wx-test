@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="wx-test"
+  id="myeclipse.1498541601317"
+  context-root="/ssm-test"
+  j2ee-spec="5.0"
+  archive="wx-test.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+
