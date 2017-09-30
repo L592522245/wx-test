@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-module
   type="WEB"
-  name="wx-text Maven Webapp"
+  name="wx-test"
   id="myeclipse.1506656903155"
   context-root="/wx-text"
   j2ee-spec="1.7"
-  archive="wx-text Maven Webapp.war">
+  archive="wx-test.war">
   <attributes>
     <attribute name="webrootdir" value="src/main/webapp" />
   </attributes>
