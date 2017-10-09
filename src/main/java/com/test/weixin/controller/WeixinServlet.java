@@ -8,15 +8,21 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.test.weixin.util.CheckUtil;
+import com.test.weixin.util.RedisCacheManager;
 
 @Controller
 @RequestMapping("/weixin")
 public class WeixinServlet extends HttpServlet {
+	
+	@Autowired
+	private RedisCacheManager redisCacheManager;
+	
 	/**
 	 * 确认请求来自微信服务器
 	 */
@@ -36,7 +42,6 @@ public class WeixinServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		// 通过检验signature对请求进行校验，若校验成功则原样返回echostr，表示接入成功，否则接入失败
 		if (CheckUtil.checkSignature(signature, timestamp, nonce)) {
-			System.out.println("-------Check Success-------");
 			out.print(echostr);
 		}
 
@@ -50,6 +55,6 @@ public class WeixinServlet extends HttpServlet {
 	@RequestMapping(value = "", method = RequestMethod.POST)
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		doGet(request, response);
+		
 	}
 }

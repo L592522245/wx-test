@@ -1,0 +1,5 @@
+[ERROR] [2017-10-09 13:35:51][com.test.weixin.util.WeixinUtil]创建菜单失败 errcode:40019 errmsg:invalid button key size hint: [fTpkBa0342vr18]
+[INFO] [2017-10-09 13:35:51][com.test.weixin.main.MenuManager]菜单创建失败，错误码：40019
+[ERROR] [2017-10-09 13:39:58][com.test.weixin.util.WeixinUtil]创建菜单失败 errcode:40020 errmsg:invalid button url size hint: [0590vr20]
+[INFO] [2017-10-09 13:39:58][com.test.weixin.main.MenuManager]菜单创建失败，错误码：40020
+[INFO] [2017-10-09 13:40:55][com.test.weixin.main.MenuManager]菜单创建成功！
