@@ -1,4 +1,5 @@
-package com.test.weixin.domain;
+package com.test.weixin.domain.menu;
+
 
 /*
  * 描述: 整个菜单对象的封装

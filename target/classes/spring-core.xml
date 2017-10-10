@@ -31,7 +31,6 @@
 			<list>
 				<!-- 这里支持多种寻址方式：classpath和file -->
 				<value>classpath:jdbc.properties</value>
-				<value>classpath:redis.properties</value>
 				<!-- 推荐使用file的方式引入，这样可以将配置和代码分离 -->
 			</list>
 		</property>
@@ -67,59 +66,4 @@
 
 	<!-- 该配置文件用于进行service的bean注册。 -->
 	<context:component-scan base-package="com.test.service" />
-
-	<!-- redis数据源 -->
-	<bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
-		<!-- 最大空闲数 -->
-		<property name="maxIdle" value="${redis.maxIdle}" />
-		<!-- 最大空连接数 -->
-		<property name="maxTotal" value="${redis.maxTotal}" />
-		<!-- 最大等待时间 -->
-		<property name="maxWaitMillis" value="${redis.maxWaitMillis}" />
-		<!-- 连接超时时是否阻塞，false时报异常,ture阻塞直到超时, 默认true -->
-		<property name="blockWhenExhausted" value="${redis.blockWhenExhausted}" />
-		<!-- 返回连接时，检测连接是否成功 -->
-		<property name="testOnBorrow" value="${redis.testOnBorrow}" />
-	</bean>
-
-	<!-- Spring-redis连接池管理工厂 -->
-	<bean id="jedisConnectionFactory"
-		class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
-		<!-- IP地址 -->
-		<property name="hostName" value="${redis.host}" />
-		<!-- 端口号 -->
-		<property name="port" value="${redis.port}" />
-		<!-- 超时时间 默认2000 -->
-		<property name="timeout" value="${redis.timeout}" />
-		<!-- 连接池配置引用 -->
-		<property name="poolConfig" ref="poolConfig" />
-		<!-- usePool：是否使用连接池 -->
-		<property name="usePool" value="true" />
-	</bean>
-
-	<!-- 配置RedisTemplate -->
-	<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
-		<property name="connectionFactory" ref="jedisConnectionFactory"></property>
-		<property name="keySerializer">
-			<bean
-				class="org.springframework.data.redis.serializer.StringRedisSerializer" />
-		</property>
-		<property name="valueSerializer">
-			<bean
-				class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer" />
-		</property>
-		<property name="hashKeySerializer">
-			<bean
-				class="org.springframework.data.redis.serializer.StringRedisSerializer" />
-		</property>
-		<property name="hashValueSerializer">
-			<bean
-				class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer" />
-		</property>
-	</bean>
-
-	<!--自定义redis工具类,在需要缓存的地方注入此类 -->
-	<bean id="redisrCacheManager" class="com.test.weixin.util.RedisCacheManager">
-		<property name="redisTemplate" ref="redisTemplate" />
-	</bean>
 </beans>

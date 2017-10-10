@@ -1,4 +1,5 @@
-package com.test.weixin.domain;
+package com.test.weixin.domain.message;
+
 
 public class TextMessage extends BaseMessage {
 	// 消息内容

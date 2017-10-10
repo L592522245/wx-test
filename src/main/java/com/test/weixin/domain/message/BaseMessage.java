@@ -1,4 +1,4 @@
-package com.test.weixin.domain;
+package com.test.weixin.domain.message;
 
 public class BaseMessage {
 	// 开发者微信号

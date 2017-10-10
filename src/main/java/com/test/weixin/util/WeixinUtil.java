@@ -16,19 +16,40 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.test.weixin.domain.AccessToken;
-import com.test.weixin.domain.Menu;
-import com.test.weixin.domain.Template;
+import com.test.weixin.domain.menu.Menu;
+import com.test.weixin.domain.message.Template;
+import com.test.weixin.domain.userInfo.UserInfo;
 
 /**
  * 描述: 公众平台通用接口工具类 </br>
  */
 public class WeixinUtil {
 
-	private static final String APPID = "wxbb4ca07ffff6a141";
-	private static final String APPSECRET = "c7279e47b76346357787a35602ba7c48";
+	public static final String APPID = "wxbb4ca07ffff6a141";
+	public static final String APPSECRET = "c7279e47b76346357787a35602ba7c48";
 	private static final String ACCESS_TOKEN_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
 
 	private static Logger log = LoggerFactory.getLogger(WeixinUtil.class);
+	
+	/**
+	 * 获取用户信息
+	 * @param token
+	 * @param openId
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
+	public static UserInfo userInfo(String token, String openId) throws ClientProtocolException, IOException {
+		String requestUrl = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN";
+		requestUrl = requestUrl.replace("ACCESS_TOKEN", token).replace("OPENID", openId);
+		
+		UserInfo userInfo = new UserInfo();
+		JSONObject jsonObject = doGetStr(requestUrl);
+		if (jsonObject != null) {
+			userInfo.setNickname(jsonObject.getString("nickname"));
+		}
+		return userInfo;
+	}
 
 	// 菜单创建（POST） 限100（次/天）
 	public static String menu_create_url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN";

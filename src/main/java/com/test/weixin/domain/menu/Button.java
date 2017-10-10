@@ -1,4 +1,4 @@
-package com.test.weixin.domain;
+package com.test.weixin.domain.menu;
 
 /**
  * 描述: 菜单项的基类 </br>

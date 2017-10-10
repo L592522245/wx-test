@@ -1,4 +1,5 @@
-package com.test.weixin.domain;
+package com.test.weixin.domain.menu;
+
 
 /*
  * 描述: 父菜单项 :包含有二级菜单项的一级菜单。

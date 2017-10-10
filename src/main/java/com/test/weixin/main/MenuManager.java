@@ -5,13 +5,12 @@ import java.io.IOException;
 import org.apache.http.client.ClientProtocolException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import com.test.weixin.domain.Button;
-import com.test.weixin.domain.CommonButton;
-import com.test.weixin.domain.ComplexButton;
-import com.test.weixin.domain.Menu;
-import com.test.weixin.util.RedisCacheManager;
+import com.test.weixin.domain.menu.Button;
+import com.test.weixin.domain.menu.CommonButton;
+import com.test.weixin.domain.menu.ComplexButton;
+import com.test.weixin.domain.menu.Menu;
+import com.test.weixin.util.TokenUtil;
 import com.test.weixin.util.WeixinUtil;
 
 /**
@@ -20,20 +19,10 @@ import com.test.weixin.util.WeixinUtil;
  */
 public class MenuManager {
 	private static Logger log = LoggerFactory.getLogger(MenuManager.class);
-	
-	@Autowired  
-    private static RedisCacheManager redisCacheManager;
 
 	public static void main(String[] args) throws ClientProtocolException, IOException {
-		Object tk = redisCacheManager.get("wx_token");
-		if(tk == null){  
-			String token = WeixinUtil.getAccessToken().getAccessToken();
-			redisCacheManager.set("wx_token", token, 7000);
-            tk = redisCacheManager.get("wx_token");
-        }
-				
 		// 调用接口获取access_token
-		String at = tk.toString();
+		String at = (String) TokenUtil.getToken().get("access_token");
 
 		if (null != at) {
 			// 调用接口创建菜单

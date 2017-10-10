@@ -1,6 +1,7 @@
-package com.test.weixin.domain;
+package com.test.weixin.domain.message;
 
 import java.util.List;
+
 
 public class Template {  
 	  

@@ -1,4 +1,6 @@
-package com.test.weixin.domain;
+package com.test.weixin.domain.message;
+
+import com.test.weixin.domain.ResultState;
 
 /** 
  * 模板消息 返回的结果 

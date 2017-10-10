@@ -4,6 +4,13 @@
      <welcome-file>/index.jsp</welcome-file>  
   </welcome-file-list>
   <servlet>
+    <servlet-name>initServlet</servlet-name>
+    <servlet-class>
+        com.test.weixin.main.InitServlet
+    </servlet-class>
+    <load-on-startup>0</load-on-startup>
+  </servlet>
+  <servlet>
     <servlet-name>springmvc</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
     <init-param>

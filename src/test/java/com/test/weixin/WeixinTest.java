@@ -1,24 +1,27 @@
 package com.test.weixin;
 
 import java.io.IOException;
+import java.util.Map;
 
 import org.apache.http.client.ClientProtocolException;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.Test;
 
 import com.test.weixin.domain.AccessToken;
+import com.test.weixin.util.TokenUtil;
 import com.test.weixin.util.WeixinUtil;
 
 public class WeixinTest {
-	
-	/**
-	 * @param args
-	 * @throws IOException 
-	 * @throws ClientProtocolException 
-	 */
-	public static void main(String[] args) throws ClientProtocolException, IOException {
+	@Test
+	public void testGetToken3() {
+		Map<String, Object> token = TokenUtil.getToken();
+		System.out.println(token.get("access_token"));
+		System.out.println(token.get("expires_in"));
+	}
+
+	@Test
+	public void testSaveToken4() throws ClientProtocolException, IOException {
 		AccessToken token = WeixinUtil.getAccessToken();
-		System.out.println("AccessToken: " + token.getAccessToken());
-		System.out.println("ExpiresIn: " + token.getExpiresIn());
+		TokenUtil.saveToken(token);
 	}
 
 }

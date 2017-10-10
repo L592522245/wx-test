@@ -13,16 +13,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.test.weixin.main.CoreService;
 import com.test.weixin.util.CheckUtil;
-import com.test.weixin.util.RedisCacheManager;
 
 @Controller
 @RequestMapping("/weixin")
 public class WeixinServlet extends HttpServlet {
-	
-	@Autowired
-	private RedisCacheManager redisCacheManager;
-	
 	/**
 	 * 确认请求来自微信服务器
 	 */
@@ -55,6 +51,18 @@ public class WeixinServlet extends HttpServlet {
 	@RequestMapping(value = "", method = RequestMethod.POST)
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+		System.out.println("----------微信请求-----------");
+		// 消息的接收、处理、响应
+        // 将请求、响应的编码均设置为UTF-8（防止中文乱码）
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+
+        // 调用核心业务类接收消息、处理消息
+        String respMsg = CoreService.processRequest(request);
+
+        // 响应消息
+        PrintWriter out = response.getWriter();
+        out.print(respMsg);
+        out.close();
 	}
 }
