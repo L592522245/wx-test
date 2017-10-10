@@ -10,7 +10,7 @@ import com.test.weixin.domain.AccessToken;
 import com.test.weixin.util.TokenUtil;
 import com.test.weixin.util.WeixinUtil;
 
-public class WeixinTest {
+public class TokenTest {
 	@Test
 	public void testGetToken3() {
 		Map<String, Object> token = TokenUtil.getToken();

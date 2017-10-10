@@ -2,6 +2,7 @@ package com.test.weixin.util;
 
 import java.io.IOException;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.http.HttpEntity;
@@ -30,19 +31,47 @@ public class WeixinUtil {
 	private static final String ACCESS_TOKEN_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
 
 	private static Logger log = LoggerFactory.getLogger(WeixinUtil.class);
-	
+
 	/**
-	 * 获取用户信息
+	 * 获取用户列表
+	 * 
 	 * @param token
 	 * @param openId
 	 * @return
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
-	public static UserInfo userInfo(String token, String openId) throws ClientProtocolException, IOException {
+	public static Object[] userList(String token)
+			throws ClientProtocolException, IOException {
+		String requestUrl = "https://api.weixin.qq.com/cgi-bin/user/get?access_token=ACCESS_TOKEN&next_openid=NEXT_OPENID";
+		requestUrl = requestUrl.replace("ACCESS_TOKEN", token).replace(
+				"next_openid", "");
+
+		Object[] userList = null;
+		JSONObject jsonObject = doGetStr(requestUrl);
+		if (jsonObject != null) {
+			JSONArray jsonArray = jsonObject.getJSONObject("data")
+					.getJSONArray("openid");
+			userList = jsonArray.toArray();
+		}
+		return userList;
+	}
+
+	/**
+	 * 获取用户信息
+	 * 
+	 * @param token
+	 * @param openId
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
+	public static UserInfo userInfo(String token, String openId)
+			throws ClientProtocolException, IOException {
 		String requestUrl = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN";
-		requestUrl = requestUrl.replace("ACCESS_TOKEN", token).replace("OPENID", openId);
-		
+		requestUrl = requestUrl.replace("ACCESS_TOKEN", token).replace(
+				"OPENID", openId);
+
 		UserInfo userInfo = new UserInfo();
 		JSONObject jsonObject = doGetStr(requestUrl);
 		if (jsonObject != null) {
@@ -88,13 +117,15 @@ public class WeixinUtil {
 
 	/**
 	 * 发送模板消息
+	 * 
 	 * @param token
 	 * @param template
 	 * @return
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
-	public static int sendTemplateMsg(String token, Template template) throws ClientProtocolException, IOException {
+	public static int sendTemplateMsg(String token, Template template)
+			throws ClientProtocolException, IOException {
 		int result = 0;
 		String requestUrl = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=ACCESS_TOKEN";
 		requestUrl = requestUrl.replace("ACCESS_TOKEN", token);
@@ -106,7 +137,8 @@ public class WeixinUtil {
 			if (errorCode == 0) {
 				result = 0;
 			} else {
-				System.out.println("模板消息发送失败:" + errorCode + "," + errorMessage);
+				System.out
+						.println("模板消息发送失败:" + errorCode + "," + errorMessage);
 				result = jsonResult.getInt("errcode");
 			}
 		}
