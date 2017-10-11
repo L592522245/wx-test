@@ -3,3 +3,9 @@
 [ERROR] [2017-10-09 13:39:58][com.test.weixin.util.WeixinUtil]创建菜单失败 errcode:40020 errmsg:invalid button url size hint: [0590vr20]
 [INFO] [2017-10-09 13:39:58][com.test.weixin.main.MenuManager]菜单创建失败，错误码：40020
 [INFO] [2017-10-09 13:40:55][com.test.weixin.main.MenuManager]菜单创建成功！
+[INFO] [2017-10-11 15:49:28][com.test.weixin.main.MenuManager]菜单创建成功！
+[INFO] [2017-10-11 15:51:33][com.test.weixin.main.MenuManager]菜单创建成功！
+[INFO] [2017-10-11 15:55:30][com.test.weixin.main.MenuManager]菜单创建成功！
+[INFO] [2017-10-11 15:56:02][com.test.weixin.main.MenuManager]菜单创建成功！
+[INFO] [2017-10-11 16:08:19][com.test.weixin.main.MenuManager]菜单创建成功！
+[INFO] [2017-10-11 16:08:42][com.test.weixin.main.MenuManager]菜单创建成功！

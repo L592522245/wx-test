@@ -1,0 +1,27 @@
+body {
+	background-color: #f8f8f8;
+}
+.container {
+	margin: 0 10px;
+}
+.btn_title {
+	font-size: 16px;
+    font-weight: 400;
+}
+.btn_desc {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    color: #888;
+    text-align: left;
+    font-size: 14px;
+}
+.hintPage_container {
+	padding: 40px 20px;
+	text-align: center;
+}
+.hintPage_container>i {
+	margin-bottom: 10px;
+}
+.hintPage_container>a {
+	margin-top: 20px;
+}

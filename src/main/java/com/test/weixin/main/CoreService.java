@@ -49,7 +49,7 @@ public class CoreService {
 			// 查询用户信息
 			String userName = WeixinUtil.userInfo(at, fromUserName).getNickname();
 			
-			System.out.println("微信号：" + fromUserName + "  昵称：" + userName + "  消息类型：" + msgType + "  内容：" + content);
+			log.info("微信号：" + fromUserName + "  昵称：" + userName + "  消息类型：" + msgType + "  内容：" + content);
 			
 			// 自定义菜单点击事件
 			if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_EVENT)) {

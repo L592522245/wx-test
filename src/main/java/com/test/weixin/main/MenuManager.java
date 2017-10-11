@@ -57,7 +57,7 @@ public class MenuManager {
 		mainBtn1.setKey("11");
 
 		CommonButton mainBtn2 = new CommonButton();
-		mainBtn2.setName("接口调用");
+		mainBtn2.setName("微信网页开发");
 		mainBtn2.setType("view");
 		mainBtn2.setUrl("http://1m609e2841.iask.in/apiTest");
 
