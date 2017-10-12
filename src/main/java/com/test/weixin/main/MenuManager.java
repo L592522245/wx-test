@@ -43,27 +43,32 @@ public class MenuManager {
 	 */
 	private static Menu getMenu() {
 		CommonButton btn31 = new CommonButton();
-		btn31.setName("子菜单1");
+		btn31.setName("接收模板消息");
 		btn31.setType("click");
 		btn31.setKey("31");
+		
+		CommonButton btn32 = new CommonButton();
+		btn32.setName("微信网页开发");
+		btn32.setType("view");
+		btn32.setUrl("http://1m609e2841.iask.in/apiTest");
 
 		/**
 		 * 微信： mainBtn1,mainBtn2,mainBtn3底部的三个菜单。
 		 */
 
 		CommonButton mainBtn1 = new CommonButton();
-		mainBtn1.setName("消息模板");
+		mainBtn1.setName("接收模板消息");
 		mainBtn1.setType("click");
 		mainBtn1.setKey("11");
 
 		CommonButton mainBtn2 = new CommonButton();
-		mainBtn2.setName("微信网页开发");
+		mainBtn2.setName("点击登录");
 		mainBtn2.setType("view");
-		mainBtn2.setUrl("http://1m609e2841.iask.in/apiTest");
+		mainBtn2.setUrl("http://1m609e2841.iask.in/apiTest/oAuth");
 
 		ComplexButton mainBtn3 = new ComplexButton();
 		mainBtn3.setName("子菜单");
-		mainBtn3.setSub_button(new CommonButton[] { btn31});
+		mainBtn3.setSub_button(new CommonButton[] { btn31, btn32});
 
 		/**
 		 * 封装整个菜单

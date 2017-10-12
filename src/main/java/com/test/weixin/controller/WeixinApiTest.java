@@ -42,7 +42,7 @@ public class WeixinApiTest {
 	public String oAuth(HttpServletRequest request, HttpServletResponse response) {
 		String requestUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE#wechat_redirect";
 		String appid = WeixinUtil.APPID;
-		requestUrl = requestUrl.replace("APPID", appid).replace("REDIRECT_URI", "http%3a%2f%2f1m609e2841.iask.in%2fapiTest%2fgetUserInfo").replace("SCOPE", "snsapi_userinfo").replace("state", "1");
+		requestUrl = requestUrl.replace("APPID", appid).replace("REDIRECT_URI", "http%3a%2f%2f1m609e2841.iask.in%2fapiTest%2fgetUserInfo").replace("SCOPE", "snsapi_userinfo").replace("STATE", "1");
 		
 		return "redirect:" + requestUrl;
 	}

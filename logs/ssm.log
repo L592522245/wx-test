@@ -9,3 +9,21 @@
 [INFO] [2017-10-11 15:56:02][com.test.weixin.main.MenuManager]菜单创建成功！
 [INFO] [2017-10-11 16:08:19][com.test.weixin.main.MenuManager]菜单创建成功！
 [INFO] [2017-10-11 16:08:42][com.test.weixin.main.MenuManager]菜单创建成功！
+[INFO] [2017-10-12 20:40:25][com.test.weixin.main.MenuManager]菜单创建成功！
+[ERROR] [2017-10-12 20:46:47][com.test.weixin.util.WeixinUtil]创建菜单失败 errcode:40055 errmsg:invalid button url domain hint: [f_Sdta0407vr24]
+[INFO] [2017-10-12 20:46:47][com.test.weixin.main.MenuManager]菜单创建失败，错误码：40055
+[ERROR] [2017-10-12 20:47:51][com.test.weixin.util.WeixinUtil]创建菜单失败 errcode:40055 errmsg:invalid button url domain hint: [za.EcA0471vr25]
+[INFO] [2017-10-12 20:47:51][com.test.weixin.main.MenuManager]菜单创建失败，错误码：40055
+[ERROR] [2017-10-12 20:49:39][com.test.weixin.util.WeixinUtil]创建菜单失败 errcode:40055 errmsg:invalid button url domain hint: [zoYN6a0580vr21]
+[INFO] [2017-10-12 20:49:39][com.test.weixin.main.MenuManager]菜单创建失败，错误码：40055
+[ERROR] [2017-10-12 20:49:57][com.test.weixin.util.WeixinUtil]创建菜单失败 errcode:40055 errmsg:invalid button url domain hint: [IKIr7a0598vr22]
+[INFO] [2017-10-12 20:49:57][com.test.weixin.main.MenuManager]菜单创建失败，错误码：40055
+[ERROR] [2017-10-12 20:51:45][com.test.weixin.util.WeixinUtil]创建菜单失败 errcode:40027 errmsg:invalid sub button url size hint: [T0705vr25]
+[INFO] [2017-10-12 20:51:45][com.test.weixin.main.MenuManager]菜单创建失败，错误码：40027
+[ERROR] [2017-10-12 20:56:52][com.test.weixin.util.WeixinUtil]创建菜单失败 errcode:40027 errmsg:invalid sub button url size hint: [rdW_TA0013vr26]
+[INFO] [2017-10-12 20:56:52][com.test.weixin.main.MenuManager]菜单创建失败，错误码：40027
+[INFO] [2017-10-12 21:00:18][com.test.weixin.main.MenuManager]菜单创建成功！
+[INFO] [2017-10-12 21:01:27][com.test.weixin.main.MenuManager]菜单创建成功！
+[INFO] [2017-10-12 21:07:44][com.test.weixin.main.MenuManager]菜单创建成功！
+[INFO] [2017-10-12 21:08:51][com.test.weixin.main.MenuManager]菜单创建成功！
+[INFO] [2017-10-12 21:13:35][com.test.weixin.main.MenuManager]菜单创建成功！
