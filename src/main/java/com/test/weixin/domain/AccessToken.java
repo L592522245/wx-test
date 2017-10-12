@@ -6,6 +6,20 @@ public class AccessToken {
     private String refresh_token;
     private String openid;
     private String scope;
+    private String errcode;
+    private String errmsg;
+	public String getErrmsg() {
+		return errmsg;
+	}
+	public void setErrmsg(String errmsg) {
+		this.errmsg = errmsg;
+	}
+	public String getErrcode() {
+		return errcode;
+	}
+	public void setErrcode(String errcode) {
+		this.errcode = errcode;
+	}
 	public String getRefresh_token() {
 		return refresh_token;
 	}

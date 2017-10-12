@@ -26,18 +26,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </head>
   
   <body>
-  	<div class="weui-msg">
-        <div class="weui-msg__icon-area"><i class="weui-icon-warn weui-icon_msg"></i></div>
-        <div class="weui-msg__text-area">
-            <h2 class="weui-msg__title">操作失败</h2>
-            <p class="weui-msg__desc">用户信息获取失败，请返回上一页面</p>
+  	<article class="weui-article">
+	    <h1>登录成功！</h1>
+	    <p style="font-size: 13px;color: #888888;">登录授权后可获得当前用户信息</p>
+	</article>
+	<div class="hintPage_container">
+		<div class="weui-cells">
+            <div class="weui-cell">
+                <div class="weui-cell__hd" style="position: relative;margin-right: 10px;">
+                    <img src="${ userInfo.headimgurl }" style="width: 50px;display: block">
+                </div>
+                <div class="weui-cell__bd">
+                    <p>${ userInfo.nickname }</p>
+                    <p style="font-size: 13px;color: #888888;">${ userInfo.sex }</p>
+                    <p style="font-size: 13px;color: #888888;">${ userInfo.country } ${ userInfo.province } ${ userInfo.city }</p>
+                </div>
+            </div>
         </div>
-        <div class="weui-msg__opr-area">
-            <p class="weui-btn-area">
-                <a href="apiTest" class="weui-btn weui-btn_primary">返回</a>
-            </p>
-        </div>
-    </div>
+	</div>
   </body>
   
   <script>

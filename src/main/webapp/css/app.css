@@ -16,12 +16,5 @@ body {
     font-size: 14px;
 }
 .hintPage_container {
-	padding: 40px 20px;
-	text-align: center;
-}
-.hintPage_container>i {
-	margin-bottom: 10px;
-}
-.hintPage_container>a {
-	margin-top: 20px;
+	
 }

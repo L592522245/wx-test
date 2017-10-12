@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.test.weixin.domain.AccessToken;
+import com.test.weixin.domain.ResultState;
 import com.test.weixin.domain.menu.Menu;
 import com.test.weixin.domain.message.Template;
 import com.test.weixin.domain.userInfo.UserInfo;
@@ -103,7 +104,14 @@ public class WeixinUtil {
 		JSONObject jsonObject = httpsRequest(requestUrl, "GET", null);
 		if (jsonObject != null) {
 			userInfo.setNickname(jsonObject.getString("nickname"));
-			userInfo.setSex(jsonObject.getInt("sex"));
+			int sex = jsonObject.getInt("sex");
+			if(sex == 1) {
+				userInfo.setSex("男");
+			} else if(sex == 2) {
+				userInfo.setSex("女");
+			} else {
+				userInfo.setSex("未知");
+			}
 			userInfo.setProvince(jsonObject.getString("province"));
 			userInfo.setCity(jsonObject.getString("city"));
 			userInfo.setCountry(jsonObject.getString("country"));
@@ -208,22 +216,22 @@ public class WeixinUtil {
 			IOException {
 		AccessToken token = new AccessToken();
 		
-		if(code == null) {
-			return null;
-		}
-		
 		String requestUrl = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code";
 		requestUrl = requestUrl.replace("APPID", APPID).replace(
 				"SECRET", APPSECRET).replace("CODE", code);
 		JSONObject jsonObject = httpsRequest(requestUrl, "GET", null);
-		System.out.println(jsonObject);
-		if (jsonObject != null) {
+		if (!jsonObject.containsKey("errcode")) {
 			token.setAccessToken(jsonObject.getString("access_token"));
 			token.setExpiresIn(jsonObject.getInt("expires_in"));
 			token.setRefresh_token(jsonObject.getString("refresh_token"));
 			token.setOpenid(jsonObject.getString("openid"));
+			log.info("网页授权请求成功！openid：" + token.getOpenid());
+			return token;
+		} else {
+			token.setErrcode(jsonObject.getString("errcode"));
+			token.setErrmsg(jsonObject.getString("errmsg"));
+			return token;
 		}
-		return token;
 	}
 
 	/**

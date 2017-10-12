@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -72,7 +73,7 @@ public class TokenUtil {
 			pst.setString(1, token.getAccessToken());
 			pst.setInt(2, token.getExpiresIn());
 			long now = new Date().getTime();
-			pst.setTimestamp(3, new java.sql.Timestamp(now));
+			pst.setTimestamp(3, new Timestamp(now));
 			pst.execute();
 		} catch (SQLException ex) {
 			System.out.println("数据库操作异常：" + ex.getMessage());

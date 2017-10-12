@@ -6,7 +6,7 @@ public class UserInfo {
 	private int subscribe;
 	private String openid;
 	private String nickname;
-	private int sex;
+	private String sex;
 	private String city;
 	private String country;
 	private String province;
@@ -35,11 +35,11 @@ public class UserInfo {
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
 	}
-	public int getSex() {
+	public String getSex() {
 		return sex;
 	}
-	public void setSex(int sex) {
-		this.sex = sex;
+	public void setSex(String string) {
+		this.sex = string;
 	}
 	public String getCity() {
 		return city;

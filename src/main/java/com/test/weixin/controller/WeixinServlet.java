@@ -51,7 +51,6 @@ public class WeixinServlet extends HttpServlet {
 	@RequestMapping(value = "", method = RequestMethod.POST)
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		System.out.println("----------微信请求-----------");
 		// 消息的接收、处理、响应
         // 将请求、响应的编码均设置为UTF-8（防止中文乱码）
         request.setCharacterEncoding("UTF-8");
