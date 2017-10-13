@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.test.weixin.domain.AccessToken;
+import com.test.weixin.domain.ApiTicket;
 import com.test.weixin.util.TokenUtil;
 import com.test.weixin.util.WeixinUtil;
 
@@ -23,15 +24,20 @@ public class TokenThread implements Runnable {
     // 第三方用户唯一凭证密钥
     public static String appsecret = WeixinUtil.APPSECRET;
     public static AccessToken accessToken = null;
+    public static ApiTicket apiTicket = null;
 
     public void run() {
         while (true) {
             try {
                 accessToken = WeixinUtil.getAccessToken();
-                if (null != accessToken) {
+                apiTicket = WeixinUtil.getApiTicket(accessToken.getAccessToken());
+                if (null != accessToken && null != apiTicket) {
                     //调用存储到数据库
                     TokenUtil.saveToken(accessToken);
                     log.info("获取access_token成功，有效时长{}秒 token:{}", accessToken.getExpiresIn(), accessToken.getAccessToken());
+                    //保存apiTicket
+                    TokenUtil.saveTicket(apiTicket);
+                    log.info("获取api_ticket成功，有效时长{}秒 token:{}", apiTicket.getExpiresIn(), apiTicket.getTicket());
                     // 休眠7000秒
                     Thread.sleep((accessToken.getExpiresIn() - 200)*1000);
                 } else {

@@ -71,6 +71,8 @@ public class CoreService {
 					else
 						log.info("模板消息失败，错误码：" + result);
 				}
+				
+				return respMessage;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

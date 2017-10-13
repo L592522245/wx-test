@@ -1,10 +1,7 @@
 package com.test.weixin.controller;
 
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.util.Date;
-
-import javassist.expr.Instanceof;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,7 +17,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.test.weixin.domain.AccessToken;
 import com.test.weixin.domain.userInfo.UserInfo;
-import com.test.weixin.main.CoreService;
+import com.test.weixin.util.SignUtil;
+import com.test.weixin.util.TokenUtil;
 import com.test.weixin.util.WeixinUtil;
 
 @Controller
@@ -29,25 +27,54 @@ public class WeixinApiTest {
 	private static Logger log = LoggerFactory.getLogger(WeixinApiTest.class);
 	
 	@RequestMapping(value = "", method = RequestMethod.GET)
-	public String doGet(HttpServletRequest request, HttpServletResponse response) {
+	public String doGet(HttpServletRequest request, HttpServletResponse response, ModelMap model) {
+		String jsapi_ticket = (String) TokenUtil.getTicket().get("ticket");
+		String url = request.getScheme() + "://" + request.getServerName() + request.getRequestURI();
+		Map<String, String> ret = SignUtil.sign(jsapi_ticket, url);
+		
+		model.put("appid", WeixinUtil.APPID);
+		model.put("timestamp", ret.get("timestamp"));
+		model.put("nonceStr", ret.get("nonceStr"));
+		model.put("signature", ret.get("signature"));
 		return "wx-test";
 	}
 	
-	@RequestMapping(value = "", method = RequestMethod.POST)
-	public void doPost(HttpServletRequest request, HttpServletResponse response) {
+	@RequestMapping(value = "/imgApi", method = RequestMethod.GET)
+	public String imgApi(HttpServletRequest request, HttpServletResponse response, ModelMap model) {
+		String jsapi_ticket = (String) TokenUtil.getTicket().get("ticket");
+		String url = request.getScheme() + "://" + request.getServerName() + request.getRequestURI();
+		Map<String, String> ret = SignUtil.sign(jsapi_ticket, url);
 		
+		model.put("appid", WeixinUtil.APPID);
+		model.put("timestamp", ret.get("timestamp"));
+		model.put("nonceStr", ret.get("nonceStr"));
+		model.put("signature", ret.get("signature"));
+		return "apiTest/imgApi";
 	}
 	
-	@RequestMapping(value = "oAuth", method = RequestMethod.GET)
+	@RequestMapping(value = "/wxPay", method = RequestMethod.GET)
+	public String wxPay(HttpServletRequest request, HttpServletResponse response, ModelMap model) {
+		String jsapi_ticket = (String) TokenUtil.getTicket().get("ticket");
+		String url = request.getScheme() + "://" + request.getServerName() + request.getRequestURI();
+		Map<String, String> ret = SignUtil.sign(jsapi_ticket, url);
+		
+		model.put("appid", WeixinUtil.APPID);
+		model.put("timestamp", ret.get("timestamp"));
+		model.put("nonceStr", ret.get("nonceStr"));
+		model.put("signature", ret.get("signature"));
+		return "apiTest/wxPay";
+	}
+	
+	@RequestMapping(value = "/oAuth", method = RequestMethod.GET)
 	public String oAuth(HttpServletRequest request, HttpServletResponse response) {
 		String requestUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE#wechat_redirect";
 		String appid = WeixinUtil.APPID;
-		requestUrl = requestUrl.replace("APPID", appid).replace("REDIRECT_URI", "http%3a%2f%2f1m609e2841.iask.in%2fapiTest%2fgetUserInfo").replace("SCOPE", "snsapi_userinfo").replace("STATE", "1");
+		requestUrl = requestUrl.replace("APPID", appid).replace("REDIRECT_URI", "http%3a%2f%2fl1867227l4.iask.in%2fapiTest%2fgetUserInfo").replace("SCOPE", "snsapi_userinfo").replace("STATE", "1");
 		
 		return "redirect:" + requestUrl;
 	}
 	
-	@RequestMapping(value = "getUserInfo", method = RequestMethod.GET)
+	@RequestMapping(value = "/getUserInfo", method = RequestMethod.GET)
 	public String getUserInfo(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws ClientProtocolException, IOException {
 		HttpSession session = request.getSession();
 		

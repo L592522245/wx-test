@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.test.weixin.domain.AccessToken;
+import com.test.weixin.domain.ApiTicket;
 import com.test.weixin.domain.ResultState;
 import com.test.weixin.domain.menu.Menu;
 import com.test.weixin.domain.message.Template;
@@ -232,6 +233,27 @@ public class WeixinUtil {
 			token.setErrmsg(jsonObject.getString("errmsg"));
 			return token;
 		}
+	}
+	
+	/**
+	 * 获取api_ticket
+	 * 
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
+	public static ApiTicket getApiTicket(String token) throws ClientProtocolException,
+			IOException {
+		ApiTicket apiTicket = new ApiTicket();
+		
+		String requestUrl = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=ACCESS_TOKEN&type=jsapi";
+		requestUrl = requestUrl.replace("ACCESS_TOKEN", token);
+		JSONObject jsonObject = httpsRequest(requestUrl, "GET", null);
+		if (jsonObject != null) {
+			apiTicket.setTicket(jsonObject.getString("ticket"));
+			apiTicket.setExpiresIn(jsonObject.getInt("expires_in"));
+		}
+		return apiTicket;
 	}
 
 	/**
