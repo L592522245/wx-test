@@ -29,20 +29,28 @@ public class WeixinApiTest {
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public String doGet(HttpServletRequest request, HttpServletResponse response, ModelMap model) {
 		String jsapi_ticket = (String) TokenUtil.getTicket().get("ticket");
-		String url = request.getScheme() + "://" + request.getServerName() + request.getRequestURI();
+		String url = request.getRequestURL() + "?" + request.getQueryString();
+		int i = url.indexOf("#");
+		if(i != -1) {
+			url = url.substring(url.indexOf("#"));
+		}
 		Map<String, String> ret = SignUtil.sign(jsapi_ticket, url);
 		
 		model.put("appid", WeixinUtil.APPID);
 		model.put("timestamp", ret.get("timestamp"));
 		model.put("nonceStr", ret.get("nonceStr"));
 		model.put("signature", ret.get("signature"));
-		return "wx-test";
+		return "api-test";
 	}
 	
 	@RequestMapping(value = "/imgApi", method = RequestMethod.GET)
 	public String imgApi(HttpServletRequest request, HttpServletResponse response, ModelMap model) {
 		String jsapi_ticket = (String) TokenUtil.getTicket().get("ticket");
-		String url = request.getScheme() + "://" + request.getServerName() + request.getRequestURI();
+		String url = request.getRequestURL() + "?" + request.getQueryString();
+		int i = url.indexOf("#");
+		if(i != -1) {
+			url = url.substring(url.indexOf("#"));
+		}
 		Map<String, String> ret = SignUtil.sign(jsapi_ticket, url);
 		
 		model.put("appid", WeixinUtil.APPID);
@@ -55,7 +63,11 @@ public class WeixinApiTest {
 	@RequestMapping(value = "/wxPay", method = RequestMethod.GET)
 	public String wxPay(HttpServletRequest request, HttpServletResponse response, ModelMap model) {
 		String jsapi_ticket = (String) TokenUtil.getTicket().get("ticket");
-		String url = request.getScheme() + "://" + request.getServerName() + request.getRequestURI();
+		String url = request.getRequestURL() + "?" + request.getQueryString();
+		int i = url.indexOf("#");
+		if(i != -1) {
+			url = url.substring(url.indexOf("#"));
+		}
 		Map<String, String> ret = SignUtil.sign(jsapi_ticket, url);
 		
 		model.put("appid", WeixinUtil.APPID);

@@ -49,6 +49,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <div class="weui-cell__ft" style="font-size: 0">
             </div>
         </div>
+        <div class="weui-cell weui-cell_access" onclick="getAddress()">
+            <div class="weui-cell__bd">收货地址</div>
+            <div class="weui-cell__ft" style="font-size: 0">
+            </div>
+        </div>
     </div>
   </body>
   
@@ -61,7 +66,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   	}
   	
   	wx.config({
-	    debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+	    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
 	    appId: '${appid}', // 必填，公众号的唯一标识
 	    timestamp: '${timestamp}', // 必填，生成签名的时间戳
 	    nonceStr: '${nonceStr}', // 必填，生成签名的随机串
@@ -87,7 +92,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				    longitude: res.longitude, // 经度，浮点数，范围为180 ~ -180。
 				    name: '我的位置', // 位置名
 				    address: 'xxx', // 地址详情说明
-				    scale: 1, // 地图缩放级别,整形值,范围从1~28。默认为最大
+				    scale: 28, // 地图缩放级别,整形值,范围从1~28。默认为最大
 				    infoUrl: '' // 在查看位置界面底部显示的超链接,可点击跳转
 				});
 		    }
@@ -106,6 +111,22 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	
 	function wxPay() {
 		window.location.href = "apiTest/wxPay";
+	}
+	
+	function getAddress() {
+		wx.openAddress({
+		    success: function (res) {
+		        var userName = res.userName; // 收货人姓名
+		        var postalCode = res.postalCode; // 邮编
+		        var provinceName = res.provinceName; // 国标收货地址第一级地址（省）
+		        var cityName = res.cityName; // 国标收货地址第二级地址（市）
+		        var countryName = res.countryName; // 国标收货地址第三级地址（国家）
+		        var detailInfo = res.detailInfo; // 详细收货地址信息
+		        var nationalCode = res.nationalCode; // 收货地址国家码
+		        var telNumber = res.telNumber; // 收货人手机号码
+		        alert("收货人姓名：" + userName + "，手机：" + telNumber +  "，地区：" + countryName + " " + provinceName + " " + cityName + " " + detailInfo);
+		    }
+		});
 	}
   </script>
 </html>

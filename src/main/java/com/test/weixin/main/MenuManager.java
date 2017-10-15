@@ -50,7 +50,7 @@ public class MenuManager {
 		CommonButton btn32 = new CommonButton();
 		btn32.setName("微信网页开发");
 		btn32.setType("view");
-		btn32.setUrl("http://l1867227l4.iask.in/apiTest");
+		btn32.setUrl("http://1m609e2841.iask.in/apiTest");
 
 		/**
 		 * 微信： mainBtn1,mainBtn2,mainBtn3底部的三个菜单。
@@ -64,7 +64,9 @@ public class MenuManager {
 		CommonButton mainBtn2 = new CommonButton();
 		mainBtn2.setName("点击登录");
 		mainBtn2.setType("view");
-		mainBtn2.setUrl("http://l1867227l4.iask.in/apiTest/oAuth");
+		/*l1867227l4*/
+		/*1m609e2841*/
+		mainBtn2.setUrl("http://1m609e2841.iask.in/apiTest/oAuth");
 
 		ComplexButton mainBtn3 = new ComplexButton();
 		mainBtn3.setName("子菜单");
