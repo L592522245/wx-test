@@ -14,31 +14,29 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <meta name="description" content="">
     <meta name="keywords" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>发布成功</title>
+    <title>公告</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="Cache-Control" content="no-siteapp"/>
 	<link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/1.1.2/weui.min.css">
 	<link rel="stylesheet" href="css/app.css">
 	<script type="text/javascript" src="https://res.wx.qq.com/open/libs/weuijs/1.1.2/weui.min.js"></script>
-
+	<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
   </head>
   
   <body>
-  	<div class="weui-msg">
-        <div class="weui-msg__icon-area"><i class="weui-icon-success weui-icon_msg"></i></div>
-        <div class="weui-msg__text-area">
-            <h2 class="weui-msg__title">操作成功</h2>
-            <p class="weui-msg__desc">模板消息发布成功！</p>
-        </div>
-        <div class="weui-msg__opr-area">
-            <p class="weui-btn-area">
-                <a href="apiTest/sendMsg" class="weui-btn weui-btn_primary">返回</a>
-            </p>
-        </div>
-    </div>
+    <article class="weui-article">
+    		<h1 class="page__title">${ msg.title }</h1>
+            <p class="page__desc" style="color:#888;">发布人：${ msg.name }</p>
+            <p class="page__desc" style="color:#888;">发布时间：${ time }</p>
+            <section>
+                ${ msg.content }
+            </section>
+        </article>
   </body>
   
   <script>
+  	// 解决 Safari Mobile 伪类:active没有效果的问题，给body添加一个touchstart事件
   	document.body.addEventListener("touchstart", function () {});
+  	
   </script>
 </html>

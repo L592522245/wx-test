@@ -66,62 +66,57 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	    jsApiList: ["chooseImage", "previewImage", "uploadImage", "downloadImage"] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
 	});
 	
+	var imgsUrl = [];
+	var localIds = [];
 	function selectImg() {
 		var u = navigator.userAgent;
   		/* var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; */ //android终端
-  		var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+  		var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
 		wx.chooseImage({
 		    count: 9, // 默认9
 		    sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
 		    sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
 		    success: function (res) {
-		        var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+		        localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+		        var ul = document.getElementById("uploaderFiles");
 		        for(var i = 0; i < localIds.length; i++) {
-		        	wx.uploadImage({
+		        	/* wx.uploadImage({
 					    localId: localIds[i], // 需要上传的图片的本地ID，由chooseImage接口获得
 					    isShowProgressTips: 1, // 默认为1，显示进度提示
 					    success: function (res) {
 					        var serverId = res.serverId; // 返回图片的服务器端ID
-					        alert(serverId);
+					        
 					    }
-					});
+					}); */
 					
 		        	var li = document.createElement('li');
 		        	li.setAttribute('class', 'weui-uploader__file');
-		        	if(isIOS) {
+		        	if(isiOS) {
 			        	wx.getLocalImgData({
 						    localId: localIds[i], // 图片的localID
 						    success: function (res) {
-						        /* localIds[i] = res.localData; */ // localData是图片的base64数据，可以用img标签显示
+						        // localIds[i] = res.localData; // localData是图片的base64数据，可以用img标签显示
 						        li.style.backgroundImage = 'url(' + res.localData + ')';
 						    }
 						});
 			        } else {
 			       		li.style.backgroundImage = 'url(' + localIds[i] + ')';
 			        }
-		        	document.getElementById("uploaderFiles").appendChild(li);
+		        	
+		        	imgsUrl.push(localIds[i]);
+			        li.addEventListener('click', previewImage.bind(undefined, localIds[i], imgsUrl));
+			        
+			        ul.appendChild(li);
 		        }
-		        
-		        previewImage();
 		    }
 		});
 	}
 	
-	function previewImage() {
-		var liObj = document.getElementsByClassName('weui-uploader__file');
-		var imgsUrl = [];
-		for(var i = 0; i < liObj.length; i++) {
-			imgsUrl[i] = liObj[i].style.backgroundImage.split("(")[1].split(")")[0];
-		}
-		for(var i = 0; i < liObj.length; i++) {
-			liObj[i].addEventListener('click', function(e) {
-				var imgUrl = this.style.backgroundImage.split("(")[1].split(")")[0];
-				wx.previewImage({
-				    current: imgUrl, // 当前显示图片的http链接
-				    urls: imgsUrl // 需要预览的图片http链接列表
-				});
-			});
-		}
+	function previewImage(localIds, imgsUrl) {
+       	wx.previewImage({
+		    current: localIds, // 当前显示图片的http链接
+		    urls: imgsUrl // 需要预览的图片http链接列表
+		});
 	}
   </script>
 </html>

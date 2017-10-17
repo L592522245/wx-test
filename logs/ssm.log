@@ -30,3 +30,9 @@
 [INFO] [2017-10-13 10:16:03][com.test.weixin.main.MenuManager]菜单创建成功！
 [INFO] [2017-10-13 10:18:34][com.test.weixin.main.MenuManager]菜单创建成功！
 [INFO] [2017-10-14 15:01:50][com.test.weixin.main.MenuManager]菜单创建成功！
+[ERROR] [2017-10-16 09:05:23][com.test.weixin.util.WeixinUtil]创建菜单失败 errcode:42001 errmsg:access_token expired hint: [5kJUma0910hsz3!]
+[INFO] [2017-10-16 09:05:23][com.test.weixin.main.MenuManager]菜单创建失败，错误码：42001
+[INFO] [2017-10-16 09:06:54][com.test.weixin.main.MenuManager]菜单创建成功！
+[INFO] [2017-10-16 09:09:44][com.test.weixin.main.MenuManager]菜单创建成功！
+[INFO] [2017-10-16 15:33:35][com.test.weixin.main.MenuManager]菜单创建成功！
+[INFO] [2017-10-16 15:34:26][com.test.weixin.main.MenuManager]菜单创建成功！

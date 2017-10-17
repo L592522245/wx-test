@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.http.client.ClientProtocolException;
 
+import com.test.weixin.domain.Common;
 import com.test.weixin.util.TokenUtil;
 import com.test.weixin.util.WeixinUtil;
 
@@ -24,7 +25,7 @@ public class TemplateMsg2 {
 		Template tem = new Template();
 		tem.setTemplateId(templateId);
 		tem.setToUser(fromUserName);
-		tem.setUrl("http://1m609e2841.iask.in/apiTest");
+		tem.setUrl(Common.HTTP + "/apiTest");
 
 		SimpleDateFormat dateFormat = new SimpleDateFormat(
 				"yyyy-MM-dd HH:mm:ss");

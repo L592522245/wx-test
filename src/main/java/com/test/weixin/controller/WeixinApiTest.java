@@ -1,21 +1,29 @@
 package com.test.weixin.controller;
 
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.ClientProtocolException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.test.msg.domain.Msg;
+import com.test.msg.service.MsgService;
 import com.test.weixin.domain.AccessToken;
+import com.test.weixin.domain.message.TemplateMsg4;
 import com.test.weixin.domain.userInfo.UserInfo;
 import com.test.weixin.util.SignUtil;
 import com.test.weixin.util.TokenUtil;
@@ -25,6 +33,9 @@ import com.test.weixin.util.WeixinUtil;
 @RequestMapping("/apiTest")
 public class WeixinApiTest {
 	private static Logger log = LoggerFactory.getLogger(WeixinApiTest.class);
+	
+	@Autowired
+	private MsgService msgService;
 	
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public String doGet(HttpServletRequest request, HttpServletResponse response, ModelMap model) {
@@ -60,6 +71,75 @@ public class WeixinApiTest {
 		return "apiTest/imgApi";
 	}
 	
+	@RequestMapping(value = "/sendMsg", method = RequestMethod.GET)
+	public String sendMsg(HttpServletRequest request, HttpServletResponse response) {
+		
+		return "sendMsg";
+	}
+	
+	@RequestMapping(value = "/sendMsg", method = RequestMethod.POST)
+	public void _sendMsg(HttpServletRequest request, HttpServletResponse response) throws ClientProtocolException, IOException {
+		String name = request.getParameter("name");
+		String title = request.getParameter("title");
+		String content = request.getParameter("content");
+		
+		SimpleDateFormat dateFormat = new SimpleDateFormat(
+				"yyyy年MM月dd日 HH:mm:ss");
+		String date = dateFormat.format(new Date());
+		
+		SimpleDateFormat dateFormat2 = new SimpleDateFormat(
+				"yyyy-MM-dd HH:mm:ss");
+		String date2 = dateFormat2.format(new Date());
+		Timestamp now = Timestamp.valueOf(date2);
+		
+		Msg msg = new Msg();
+		msg.setName(name);
+		msg.setTitle(title);
+		msg.setContent(content);
+		msg.setCreateTime(now);
+		msgService.addMsg(msg);
+		
+		String id = msg.getId();
+		TemplateMsg4.sendMsg(title, name, content, date, id);
+	}
+	
+	@RequestMapping(value = "/msg", method = RequestMethod.GET)
+	public String msg(HttpServletRequest request, HttpServletResponse response, ModelMap model) {
+		String id = request.getParameter("id");
+		Msg msg = msgService.getMsgById(id);
+		
+		String[] cont = msg.getContent().split("lineBreak");
+		for(int i = 0; i < cont.length; i++) {
+			StringBuffer stringBuffer = new StringBuffer(cont[i]);
+			cont[i] = stringBuffer.insert(0, "<p>").append("</p>").toString();
+		}
+		
+		msg.setContent(StringUtils.join(cont, "").replace(" ", "&nbsp;"));
+		
+		SimpleDateFormat dateFormat = new SimpleDateFormat(
+				"yyyy年MM月dd日 HH:mm:ss");
+		String date = dateFormat.format(msg.getCreateTime());
+		
+		model.put("msg", msg);
+		model.put("time", date);
+		return "msg";
+	}
+	
+	@RequestMapping(value = "/hintPage", method = RequestMethod.GET)
+	public String hintPage(HttpServletRequest request, HttpServletResponse response) throws ClientProtocolException, IOException {
+		return "hintPage";
+	}
+	
+	/*@RequestMapping(value = "/submitTrade", method = RequestMethod.GET)
+	public String submitTrade(HttpServletRequest request, HttpServletResponse response, ModelMap model) {
+		
+		model.put("price", "1.00");
+		model.put("title", "苹果");
+		model.put("desc", "红富士");
+		
+		return "submitTrade";
+	}*/
+	
 	@RequestMapping(value = "/wxPay", method = RequestMethod.GET)
 	public String wxPay(HttpServletRequest request, HttpServletResponse response, ModelMap model) {
 		String jsapi_ticket = (String) TokenUtil.getTicket().get("ticket");
@@ -74,6 +154,8 @@ public class WeixinApiTest {
 		model.put("timestamp", ret.get("timestamp"));
 		model.put("nonceStr", ret.get("nonceStr"));
 		model.put("signature", ret.get("signature"));
+		
+		
 		return "apiTest/wxPay";
 	}
 	

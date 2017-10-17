@@ -37,7 +37,7 @@ public class TokenThread implements Runnable {
                     log.info("获取access_token成功，有效时长{}秒 token:{}", accessToken.getExpiresIn(), accessToken.getAccessToken());
                     //保存apiTicket
                     TokenUtil.saveTicket(apiTicket);
-                    log.info("获取api_ticket成功，有效时长{}秒 token:{}", apiTicket.getExpiresIn(), apiTicket.getTicket());
+                    log.info("获取api_ticket成功，有效时长{}秒 api_ticket:{}", apiTicket.getExpiresIn(), apiTicket.getTicket());
                     // 休眠7000秒
                     Thread.sleep((accessToken.getExpiresIn() - 200)*1000);
                 } else {

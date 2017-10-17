@@ -6,11 +6,11 @@
 <configuration>
 	<!-- 为实体类指定别名 -->
 	<typeAliases>
-		<package name="com.test.pojo"/>
+		<package name="com.test.msg.domain"/>
 	</typeAliases>
 	
 	<!-- 注册映射文件，Mapper位置 -->
 	<mappers>
-		<package name="com.test.mapper"/>
+		<package name="com.test.msg.mapper"/>
 	</mappers>
 </configuration>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 定义Dao的Mapper配置文件 -->
+<mapper namespace="com.test.msg.mapper.MsgMapper">
+
+	<resultMap type="com.test.msg.domain.Msg" id="rowMapper">
+		<result property="id" jdbcType="VARCHAR" column="ID" />
+		<result property="name" jdbcType="VARCHAR" column="NAME" />
+		<result property="title" jdbcType="VARCHAR" column="TITLE" />
+		<result property="content" jdbcType="VARCHAR" column="CONTENT" />
+		<result property="createTime" jdbcType="TIMESTAMP" column="CREATETIME" />
+	</resultMap>
+	
+	<sql id="BASE_COLUMN_LIST">
+		ID,
+		NAME,
+		TITLE,
+		CONTENT,
+		CREATETIME
+	</sql>
+	
+	<insert id="insert" parameterType="com.test.msg.domain.Msg">
+		<selectKey keyProperty="id" order="BEFORE" resultType="string">
+			SELECT REPLACE(UUID(),'-','')
+		</selectKey>
+		INSERT INTO msg (
+			ID,
+			NAME,
+			TITLE,
+			CONTENT,
+			CREATETIME
+		) values (
+			#{id},
+			#{name},
+			#{title},
+			#{content},
+			#{createTime}
+		)
+	</insert>
+	
+	<delete id="delete" parameterType="java.lang.String">
+		DELETE FROM msg WHERE ID = #{id}
+	</delete>
+	
+	<update id="update" parameterType="java.util.Map">
+		UPDATE msg set
+			ID=#{id},
+			NAME=#{name},
+			TITLE=#{title},
+			CONTENT=#{content},
+			CREATETIME=#{createTime}
+		WHERE
+			ID = #{id}
+	</update>
+	
+	<select id="list" parameterType="java.util.Map">
+		SELECT <include refid="BASE_COLUMN_LIST" />	FROM msg WHERE 1=1  
+	</select>
+	
+	<select id="getById" parameterType="java.lang.String" resultMap="rowMapper">
+		SELECT <include refid="BASE_COLUMN_LIST" />	FROM msg WHERE ID = #{id}
+	</select>
+</mapper>

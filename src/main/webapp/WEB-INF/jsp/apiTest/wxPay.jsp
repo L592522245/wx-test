@@ -14,7 +14,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <meta name="description" content="">
     <meta name="keywords" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>图像</title>
+    <title>支付</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="Cache-Control" content="no-siteapp"/>
 	<link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/1.1.2/weui.min.css">
@@ -58,7 +58,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   	document.body.addEventListener("touchstart", function () {});
   	
   	wx.config({
-	    debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+	    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
 	    appId: '${appid}', // 必填，公众号的唯一标识
 	    timestamp: '${timestamp}', // 必填，生成签名的时间戳
 	    nonceStr: '${nonceStr}', // 必填，生成签名的随机串
@@ -68,13 +68,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	
 	function wxPay() {
 		wx.chooseWXPay({
-		    timestamp: 0, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
-		    nonceStr: '', // 支付签名随机串，不长于 32 位
+		    timestamp: '${timestamp}', // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+		    nonceStr: '${nonceStr}', // 支付签名随机串，不长于 32 位
 		    package: '', // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=***）
-		    signType: '', // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+		    signType: 'SHA1', // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
 		    paySign: '', // 支付签名
 		    success: function (res) {
 		        // 支付成功后的回调函数
+		        alert("支付成功！");
 		    }
 		});
 	}

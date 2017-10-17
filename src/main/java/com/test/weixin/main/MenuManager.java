@@ -6,6 +6,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.test.weixin.domain.Common;
 import com.test.weixin.domain.menu.Button;
 import com.test.weixin.domain.menu.CommonButton;
 import com.test.weixin.domain.menu.ComplexButton;
@@ -48,9 +49,16 @@ public class MenuManager {
 		btn31.setKey("31");
 		
 		CommonButton btn32 = new CommonButton();
-		btn32.setName("微信网页开发");
+		btn32.setName("点击登录");
 		btn32.setType("view");
-		btn32.setUrl("http://1m609e2841.iask.in/apiTest");
+		/*l1867227l4*/
+		/*1m609e2841*/
+		btn32.setUrl(Common.HTTP + "/apiTest/oAuth");
+		
+		CommonButton btn33 = new CommonButton();
+		btn33.setName("发送模板消息");
+		btn33.setType("view");
+		btn33.setUrl(Common.HTTP + "/apiTest/sendMsg");
 
 		/**
 		 * 微信： mainBtn1,mainBtn2,mainBtn3底部的三个菜单。
@@ -62,15 +70,13 @@ public class MenuManager {
 		mainBtn1.setKey("11");
 
 		CommonButton mainBtn2 = new CommonButton();
-		mainBtn2.setName("点击登录");
+		mainBtn2.setName("网页开发");
 		mainBtn2.setType("view");
-		/*l1867227l4*/
-		/*1m609e2841*/
-		mainBtn2.setUrl("http://1m609e2841.iask.in/apiTest/oAuth");
+		mainBtn2.setUrl(Common.HTTP + "/apiTest");
 
 		ComplexButton mainBtn3 = new ComplexButton();
-		mainBtn3.setName("子菜单");
-		mainBtn3.setSub_button(new CommonButton[] { btn31, btn32});
+		mainBtn3.setName("其他");
+		mainBtn3.setSub_button(new CommonButton[] { btn31, btn32, btn33});
 
 		/**
 		 * 封装整个菜单
