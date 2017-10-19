@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.apache.http.client.ClientProtocolException;
 
-import com.test.weixin.domain.message.TemplateMsg3;
+import com.test.weixin.main.TemplateMsg3;
 
 public class MsgTest {
 

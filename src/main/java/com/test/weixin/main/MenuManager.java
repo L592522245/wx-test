@@ -6,7 +6,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.test.weixin.domain.Common;
+import com.test.weixin.Common;
 import com.test.weixin.domain.menu.Button;
 import com.test.weixin.domain.menu.CommonButton;
 import com.test.weixin.domain.menu.ComplexButton;
@@ -43,31 +43,35 @@ public class MenuManager {
 	 * @return
 	 */
 	private static Menu getMenu() {
-		CommonButton btn31 = new CommonButton();
-		btn31.setName("接收模板消息");
-		btn31.setType("click");
-		btn31.setKey("31");
+		CommonButton btn11 = new CommonButton();
+		btn11.setName("多类型消息");
+		btn11.setType("click");
+		btn11.setKey("11");
 		
-		CommonButton btn32 = new CommonButton();
-		btn32.setName("点击登录");
-		btn32.setType("view");
+		CommonButton btn12 = new CommonButton();
+		btn12.setName("模板消息");
+		btn12.setType("click");
+		btn12.setKey("12");
+		
+		CommonButton btn31 = new CommonButton();
+		btn31.setName("点击登录");
+		btn31.setType("view");
 		/*l1867227l4*/
 		/*1m609e2841*/
-		btn32.setUrl(Common.HTTP + "/apiTest/oAuth");
+		btn31.setUrl(Common.HTTP + "/apiTest/oAuth");
 		
-		CommonButton btn33 = new CommonButton();
-		btn33.setName("发送模板消息");
-		btn33.setType("view");
-		btn33.setUrl(Common.HTTP + "/apiTest/sendMsg");
+		CommonButton btn32 = new CommonButton();
+		btn32.setName("发送模板消息");
+		btn32.setType("view");
+		btn32.setUrl(Common.HTTP + "/apiTest/sendMsg");
 
 		/**
 		 * 微信： mainBtn1,mainBtn2,mainBtn3底部的三个菜单。
 		 */
 
-		CommonButton mainBtn1 = new CommonButton();
-		mainBtn1.setName("接收模板消息");
-		mainBtn1.setType("click");
-		mainBtn1.setKey("11");
+		ComplexButton mainBtn1 = new ComplexButton();
+		mainBtn1.setName("消息");
+		mainBtn1.setSub_button(new CommonButton[] { btn11, btn12 });
 
 		CommonButton mainBtn2 = new CommonButton();
 		mainBtn2.setName("网页开发");
@@ -76,7 +80,7 @@ public class MenuManager {
 
 		ComplexButton mainBtn3 = new ComplexButton();
 		mainBtn3.setName("其他");
-		mainBtn3.setSub_button(new CommonButton[] { btn31, btn32, btn33});
+		mainBtn3.setSub_button(new CommonButton[] { btn31, btn32 });
 
 		/**
 		 * 封装整个菜单

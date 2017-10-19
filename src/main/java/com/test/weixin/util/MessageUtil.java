@@ -12,7 +12,13 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-import com.test.weixin.domain.message.TextMessage;
+import com.test.weixin.domain.resp.Article;
+import com.test.weixin.domain.resp.ImageMessage;
+import com.test.weixin.domain.resp.MusicMessage;
+import com.test.weixin.domain.resp.NewsMessage;
+import com.test.weixin.domain.resp.TextMessage;
+import com.test.weixin.domain.resp.VideoMessage;
+import com.test.weixin.domain.resp.VoiceMessage;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.core.util.QuickWriter;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -105,15 +111,14 @@ public class MessageUtil {
     /**
      * 扩展xstream使其支持CDATA
      */
-    /*private static XStream xstream = new XStream(new XppDriver() {
+    private static XStream xstream = new XStream(new XppDriver() {
         public HierarchicalStreamWriter createWriter(Writer out) {
             return new PrettyPrintWriter(out) {
                 // 对所有xml节点的转换都增加CDATA标记
                 boolean cdata = true;
 
-                @SuppressWarnings("unchecked")
-                public void startNode(String name, Class clazz) {
-                    super.startNode(name, clazz);
+                public void startNode(String name) {
+                    super.startNode(name);
                 }
 
                 protected void writeText(QuickWriter writer, String text) {
@@ -127,7 +132,7 @@ public class MessageUtil {
                 }
             };
         }
-    });*/
+    });
 
     /**
      * 文本消息对象转换成xml
@@ -135,64 +140,64 @@ public class MessageUtil {
      * @param textMessage 文本消息对象
      * @return xml
      */
-    /*public static String messageToXml(TextMessage textMessage) {
+    public static String messageToXml(TextMessage textMessage) {
         xstream.alias("xml", textMessage.getClass());
         return xstream.toXML(textMessage);
     }
 
-    *//**
+    /**
      * 图片消息对象转换成xml
      * 
      * @param imageMessage 图片消息对象
      * @return xml
-     *//*
+     */
     public static String messageToXml(ImageMessage imageMessage) {
         xstream.alias("xml", imageMessage.getClass());
         return xstream.toXML(imageMessage);
     }
 
-    *//**
+    /**
      * 语音消息对象转换成xml
      * 
      * @param voiceMessage 语音消息对象
      * @return xml
-     *//*
+     */
     public static String messageToXml(VoiceMessage voiceMessage) {
         xstream.alias("xml", voiceMessage.getClass());
         return xstream.toXML(voiceMessage);
     }
 
-    *//**
+    /**
      * 视频消息对象转换成xml
      * 
      * @param videoMessage 视频消息对象
      * @return xml
-     *//*
+     */
     public static String messageToXml(VideoMessage videoMessage) {
         xstream.alias("xml", videoMessage.getClass());
         return xstream.toXML(videoMessage);
     }
 
-    *//**
+    /**
      * 音乐消息对象转换成xml
      * 
      * @param musicMessage 音乐消息对象
      * @return xml
-     *//*
+     */
     public static String messageToXml(MusicMessage musicMessage) {
         xstream.alias("xml", musicMessage.getClass());
         return xstream.toXML(musicMessage);
     }
 
-    *//**
+    /**
      * 图文消息对象转换成xml
      * 
      * @param newsMessage 图文消息对象
      * @return xml
-     *//*
+     */
     public static String messageToXml(NewsMessage newsMessage) {
         xstream.alias("xml", newsMessage.getClass());
         xstream.alias("item", new Article().getClass());
         return xstream.toXML(newsMessage);
-    }*/
+    }
 }

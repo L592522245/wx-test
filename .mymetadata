@@ -3,7 +3,7 @@
   type="WEB"
   name="wx-test"
   id="myeclipse.1506656903155"
-  context-root="/wx-text"
+  context-root="/"
   j2ee-spec="1.7"
   archive="wx-test.war">
   <attributes>
