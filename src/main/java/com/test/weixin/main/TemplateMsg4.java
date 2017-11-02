@@ -25,15 +25,14 @@ public class TemplateMsg4 {
 		
 		Object[] userList = WeixinUtil.userList(at);
 		
-		/*for(int i = 0; i < userList.length; i++) {
+		for(int i = 0; i < userList.length; i++) {
 			Template tem = new Template();
 			tem.setTemplateId(templateId);
 			tem.setToUser(userList[i].toString());
-			tem.setUrl("http://l1867227l4.iask.in/apiTest/msg");
+			tem.setUrl(Common.HTTP + "/apiTest/msg?id=" + id);
 			
-			SimpleDateFormat dateFormat = new SimpleDateFormat(
-					"yyyy年MM月dd日 HH:mm:ss");
-			String date = dateFormat.format(new Date());
+			String[] cont = content.split("lineBreak");
+			content = StringUtils.join(cont, "\\n");
 			
 			List<TemplateParam> paras = new ArrayList<TemplateParam>();
 			paras.add(new TemplateParam("title", title, "#173177"));
@@ -43,9 +42,9 @@ public class TemplateMsg4 {
 			
 			tem.setTemplateParamList(paras);
 			WeixinUtil.sendTemplateMsg(at, tem);
-		}*/
+		}
 		
-		Template tem = new Template();
+		/*Template tem = new Template();
 		tem.setTemplateId(templateId);
 		tem.setToUser("oN_5ev6R_q_3vobSe30GTRnBdWIU");
 		tem.setUrl(Common.HTTP + "/apiTest/msg?id=" + id);
@@ -60,6 +59,6 @@ public class TemplateMsg4 {
 		paras.add(new TemplateParam("content", content, "#173177"));
 		
 		tem.setTemplateParamList(paras);
-		WeixinUtil.sendTemplateMsg(at, tem);
+		WeixinUtil.sendTemplateMsg(at, tem);*/
 	}
 }

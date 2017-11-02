@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.test.weixin.Common;
 import com.test.weixin.domain.resp.Article;
 import com.test.weixin.domain.resp.Image;
 import com.test.weixin.domain.resp.ImageMessage;
@@ -63,6 +64,10 @@ public class CoreService {
 			String msgType = requestMap.get("MsgType");
 			// 消息内容
 			String content = requestMap.get("Content");
+			// 消息创建时间
+			String createTime = requestMap.get("CreateTime");
+			// 消息id
+			String msgId = requestMap.get("MsgId");
 			
 			// 查询用户信息
 			String userName = WeixinUtil.userInfo(at, fromUserName).getNickname();
@@ -128,8 +133,8 @@ public class CoreService {
                    Music music = new Music();
                    music.setTitle("Everything's Alright - Laura Shigihara/Kan R. Gao");
                    music.setDescription("To the Moon");
-                   music.setMusicUrl("http://l1867227l4.iask.in/media/music/Kan R. Gao,Laura Shigihara - Everything's Alright.mp3");
-                   music.setHQMusicUrl("http://l1867227l4.iask.in/media/music/Kan R. Gao,Laura Shigihara - Everything's Alright.mp3");
+                   music.setMusicUrl(Common.HTTP + "/media/music/Kan R. Gao,Laura Shigihara - Everything's Alright.mp3");
+                   music.setHQMusicUrl(Common.HTTP + "/media/music/Kan R. Gao,Laura Shigihara - Everything's Alright.mp3");
                    music.setThumbMediaId("uX6p33zl12CLH0pnLN30XMds06yDT59lnaFWa6TOZWT29TgB8rT1vjUv9UY074Eg");
                    musicMessage.setMusic(music);
                    
@@ -146,13 +151,13 @@ public class CoreService {
                    Article article1 = new Article();
                    article1.setTitle("测试测试测试");
                    article1.setDescription("测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试");
-                   article1.setPicUrl("http://l1867227l4.iask.in/img/1.jpg");
-                   article1.setUrl("http://l1867227l4.iask.in/apiTest");
+                   article1.setPicUrl(Common.HTTP + "/img/1.jpg");
+                   article1.setUrl(Common.HTTP + "/apiTest");
                    Article article2 = new Article();
                    article2.setTitle("测试测试测试");
                    article2.setDescription("测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试");
-                   article2.setPicUrl("http://l1867227l4.iask.in/img/1.jpg");
-                   article2.setUrl("http://l1867227l4.iask.in/apiTest");
+                   article2.setPicUrl(Common.HTTP + "/img/1.jpg");
+                   article2.setUrl(Common.HTTP + "/apiTest");
                    
                    List<Article> articles = new ArrayList<>();
                    articles.add(article1);
@@ -207,7 +212,11 @@ public class CoreService {
                 }
                 // 上报地理位置
                 else if (eventType.equals(MessageUtil.EVENT_TYPE_LOCATION)) {
-                    // TODO 处理上报地理位置事件
+                	String latitude = requestMap.get("Latitude");
+                	String longitude = requestMap.get("Longitude");
+                	String precision = requestMap.get("Precision");
+                	System.out.println("用户进入公众号时会返回用户地理信息：维度 " + latitude + "，经度 " + longitude + "，精度 " + precision);
+                	return respCont;
                 }
                 // 自定义菜单
                 else if (eventType.equals(MessageUtil.EVENT_TYPE_CLICK)) {
@@ -238,7 +247,6 @@ public class CoreService {
     				}
     				
                 }
-                return respCont;
             }
             
             // 设置文本消息的内容

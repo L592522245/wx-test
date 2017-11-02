@@ -163,12 +163,12 @@ public class WeixinApiTest {
 	public String oAuth(HttpServletRequest request, HttpServletResponse response) {
 		String requestUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE#wechat_redirect";
 		String appid = WeixinUtil.APPID;
-		requestUrl = requestUrl.replace("APPID", appid).replace("REDIRECT_URI", "http%3a%2f%2fl1867227l4.iask.in%2fapiTest%2fgetUserInfo").replace("SCOPE", "snsapi_userinfo").replace("STATE", "1");
+		requestUrl = requestUrl.replace("APPID", appid).replace("REDIRECT_URI", "http%3a%2f%2fl1867227l4.iask.in%2fapiTest%2fregister").replace("SCOPE", "snsapi_userinfo").replace("STATE", "1");
 		
 		return "redirect:" + requestUrl;
 	}
 	
-	@RequestMapping(value = "/getUserInfo", method = RequestMethod.GET)
+	@RequestMapping(value = "/register", method = RequestMethod.GET)
 	public String getUserInfo(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws ClientProtocolException, IOException {
 		HttpSession session = request.getSession();
 		
@@ -187,7 +187,7 @@ public class WeixinApiTest {
 				return "hintPage";
 			}
 			log.info("登陆成功！openid：" + session.getAttribute("openid") + "，昵称：" + userInfo.getNickname());
-			return "userInfo";
+			return "im/im";
 		} else {
 			session.setAttribute("code", code);
 			AccessToken accessToken = WeixinUtil.getWebAccessToken(code);
@@ -208,7 +208,7 @@ public class WeixinApiTest {
 				
 				model.put("userInfo", userInfo);
 				log.info("登陆成功！openid：" + session.getAttribute("openid") + "，昵称：" + userInfo.getNickname());
-				return "userInfo";
+				return "im/im";
 			}
 		}
 	}

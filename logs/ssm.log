@@ -41,3 +41,4 @@
 [ERROR] [2017-10-19 10:44:08][com.test.weixin.util.WeixinUtil]创建菜单失败 errcode:40024 errmsg:invalid sub button type hint: [Kd9qCa0032vr25]
 [INFO] [2017-10-19 10:44:08][com.test.weixin.main.MenuManager]菜单创建失败，错误码：40024
 [INFO] [2017-10-19 10:45:10][com.test.weixin.main.MenuManager]菜单创建成功！
+[INFO] [2017-11-02 11:56:32][com.test.weixin.main.MenuManager]菜单创建成功！

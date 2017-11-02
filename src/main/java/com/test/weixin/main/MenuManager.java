@@ -54,10 +54,8 @@ public class MenuManager {
 		btn12.setKey("12");
 		
 		CommonButton btn31 = new CommonButton();
-		btn31.setName("点击登录");
+		btn31.setName("聊天室");
 		btn31.setType("view");
-		/*l1867227l4*/
-		/*1m609e2841*/
 		btn31.setUrl(Common.HTTP + "/apiTest/oAuth");
 		
 		CommonButton btn32 = new CommonButton();
