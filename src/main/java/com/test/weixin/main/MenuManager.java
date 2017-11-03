@@ -54,9 +54,9 @@ public class MenuManager {
 		btn12.setKey("12");
 		
 		CommonButton btn31 = new CommonButton();
-		btn31.setName("聊天室");
+		btn31.setName("手机短信验证");
 		btn31.setType("view");
-		btn31.setUrl(Common.HTTP + "/apiTest/oAuth");
+		btn31.setUrl(Common.HTTP + "/apiTest");
 		
 		CommonButton btn32 = new CommonButton();
 		btn32.setName("发送模板消息");
@@ -72,9 +72,9 @@ public class MenuManager {
 		mainBtn1.setSub_button(new CommonButton[] { btn11, btn12 });
 
 		CommonButton mainBtn2 = new CommonButton();
-		mainBtn2.setName("网页开发");
+		mainBtn2.setName("聊天室");
 		mainBtn2.setType("view");
-		mainBtn2.setUrl(Common.HTTP + "/apiTest");
+		mainBtn2.setUrl(Common.HTTP + "/apiTest/oAuth");
 
 		ComplexButton mainBtn3 = new ComplexButton();
 		mainBtn3.setName("其他");

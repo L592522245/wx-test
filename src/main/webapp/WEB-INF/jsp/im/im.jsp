@@ -83,30 +83,32 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			            <a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
 			        </div>
 					<div class="weui-cells" style="margin-top:0;">
-			            <div class="weui-cell weui-cell_access cell__p">
+			            <div id="addFriends" class="weui-cell weui-cell_access cell__p">
 			                <div class="weui-cell__bd">
 			                    <span style="vertical-align: middle">新的朋友</span>
 			                </div>
 			                <div class="icon-plus"></div>
 			            </div>
-			            <div class="weui-cell cell__p">
+			            <div id="myFriend" class="weui-cell cell__p" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
 			                <div class="weui-cell__bd">
 			                    <span style="vertical-align: middle">我的好友</span>
 			                </div>
 			                <div class="cell__rb">0</div>
 			            </div>
 			            <!-- 好友列表-点击后加载 -->
-			            <!-- <div class="weui-cell weui-cell_access cell__c">
-			                <div class="weui-cell__hd" style="position: relative;margin-right: 10px;">
-			                    <img src="img/boy.png" style="width: 50px;display: block;border-radius: 50%">
-			                    <span class="weui-badge" style="position: absolute;top: -.4em;right: -.4em;">8</span>
-			                </div>
-			                <div class="weui-cell__bd">
-			                    <p>名称</p>
-			                    <p style="font-size: 13px;color: #888888;">摘要信息</p>
-			                </div>
-			            </div> -->
-			            <div class="weui-cell cell__p">
+			            <div id="myFriendList" style="display: none;">
+				            <div class="weui-cell weui-cell_access cell__c">
+				                <div class="weui-cell__hd" style="position: relative;margin-right: 10px;">
+				                    <img src="img/boy.png" style="width: 50px;display: block;border-radius: 50%">
+				                    <!-- <span class="weui-badge" style="position: absolute;top: -.4em;right: -.4em;">8</span> -->
+				                </div>
+				                <div class="weui-cell__bd">
+				                    <p>名称</p>
+				                    <p style="font-size: 13px;color: #888888;">摘要信息</p>
+				                </div>
+				            </div>
+				        </div>
+			            <div id="myGroup" class="weui-cell cell__p" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
 			                <div class="weui-cell__bd">
 			                    <span style="vertical-align: middle">我的群聊</span>
 			                    <!-- <span class="weui-badge" style="margin-left: 5px;">New</span> -->
@@ -160,7 +162,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </body>
   
   <!--web im sdk-->
-  <script type="text/javascript" src="sdk/ webim.js"></script>
+  <script type="text/javascript" src="sdk/webim.js"></script>
   <script type="text/javascript" src="sdk/json2.js"></script>
   <!--web im sdk 登录 示例代码-->
   <script type="text/javascript" src="js/login/login.js"></script>
@@ -169,7 +171,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <!--web im 解析一条消息 示例代码-->
   <script type="text/javascript" src="js/common/show_one_msg.js"></script>
   <!--web im demo 基本逻辑-->
-  <script type="text/javascript" src="js/base.js"></script>
+  <!-- <script type="text/javascript" src="js/base.js"></script> -->
   <!--web im sdk 资料管理 api 示例代码-->
   <script type="text/javascript" src="js/profile/profile_manager.js"></script>
   <!--web im sdk 好友管理 api 示例代码-->
@@ -217,13 +219,23 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     var accountMode = 0;
     
     //当前用户身份
-    var loginInfo = {
+    /* var loginInfo = {
         'sdkAppID': '1400047514', //用户所属应用id,必填
         'identifier': null, //当前用户ID,必须是否字符串类型，必填
-        'accountType': accountType, //用户所属应用帐号类型，必填
+        'accountType': 	18747, //用户所属应用帐号类型，必填
         'userSig': null, //当前用户身份凭证，必须是字符串类型，必填
         'identifierNick': '${ userInfo.nickname }', //当前用户昵称，不用填写，登录接口会返回用户的昵称，如果没有设置，则返回用户的id
         'headurl': '${ userInfo.headimgurl }' //当前用户默认头像，选填，如果设置过头像，则可以通过拉取个人资料接口来得到头像信息
-    };
+    }; */
+    
+    var myFriend = document.getElementById("myFriend");
+    var myFriendList = document.getElementById("myFriendList");
+    myFriend.addEventListener("click", function() {
+    	if(myFriendList.style.display == "none") {
+	    	myFriendList.style.display = "block";
+    	} else {
+    		myFriendList.style.display = "none";
+    	}
+    });
   </script>
 </html>

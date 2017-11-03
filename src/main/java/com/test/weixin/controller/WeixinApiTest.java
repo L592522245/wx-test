@@ -1,9 +1,11 @@
 package com.test.weixin.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +22,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.github.qcloudsms.*;
 import com.test.msg.domain.Msg;
 import com.test.msg.service.MsgService;
 import com.test.weixin.domain.AccessToken;
@@ -39,6 +42,65 @@ public class WeixinApiTest {
 	
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public String doGet(HttpServletRequest request, HttpServletResponse response, ModelMap model) {
+		
+		return "smsVerify";
+	}
+	
+	@RequestMapping(value = "", method = RequestMethod.POST)
+	public void doPost(HttpServletRequest request, HttpServletResponse response) {
+		
+	}
+	
+	@RequestMapping(value = "getCode", method = RequestMethod.POST)
+	public void sendSMS(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws IOException {
+		String phone = request.getParameter("phone");
+		int code = (int) ((Math.random() * 9000) + 1000);
+		
+		// 无法申请签名，无法使用短信功能
+		/*
+		try {
+	        SmsSingleSender sender = new SmsSingleSender(1400047698, "b54c34d6a8e90e7a67e3d64a2db2c043");
+			SmsSingleSenderResult result = sender.send(0, "86", phone, "【abc】验证码测试" + code, "", "123");
+			System.out.print(result);
+		 } catch (Exception e) {
+			e.printStackTrace();
+		 }
+		*/
+		
+		String codeStr = String.valueOf(code);
+		HttpSession session = request.getSession();
+		session.setAttribute("code", code);
+		
+		PrintWriter out = response.getWriter();
+        out.print(codeStr);
+        out.close();
+	}
+	
+	@RequestMapping(value = "verify", method = RequestMethod.POST)
+	public void verify(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws IOException {
+		HttpSession session = request.getSession();
+		PrintWriter out = response.getWriter();
+		int code;
+		if(session.getAttribute("code") == null) {
+			out.print("false");
+			return;
+		} else {
+			code = (int) session.getAttribute("code");
+		}
+		
+		int codeReq = Integer.parseInt(request.getParameter("code"));
+		if(code == codeReq) {
+	        out.print("apiTest/wxjs");
+	        session.removeAttribute("code");
+		} else {
+			out.print("false");
+		}
+		out.close();
+	}
+	
+	@RequestMapping(value = "wxjs", method = RequestMethod.GET)
+	public String apiTest(HttpServletRequest request, HttpServletResponse response, ModelMap model) {
+		// 调用微信jssdk
 		String jsapi_ticket = (String) TokenUtil.getTicket().get("ticket");
 		String url = request.getRequestURL() + "?" + request.getQueryString();
 		int i = url.indexOf("#");
@@ -159,6 +221,7 @@ public class WeixinApiTest {
 		return "apiTest/wxPay";
 	}
 	
+	// 微信登录
 	@RequestMapping(value = "/oAuth", method = RequestMethod.GET)
 	public String oAuth(HttpServletRequest request, HttpServletResponse response) {
 		String requestUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE#wechat_redirect";

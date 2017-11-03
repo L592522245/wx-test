@@ -271,6 +271,12 @@
 		    <artifactId>commons-codec</artifactId>
 		    <version>1.10</version>
 		</dependency>
+		<!-- 腾讯云短信 -->
+		<dependency>
+		  	<groupId>com.github.qcloudsms</groupId>
+		  	<artifactId>sms</artifactId>
+		  	<version>0.9.1</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>wx-text</finalName>

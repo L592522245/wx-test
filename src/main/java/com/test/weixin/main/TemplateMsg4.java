@@ -24,7 +24,7 @@ public class TemplateMsg4 {
 		String templateId = "zaazOvUouAKumgJR3IOCTfyGpoxxstQmSz7srBLNlXs";
 		
 		Object[] userList = WeixinUtil.userList(at);
-		
+		/*
 		for(int i = 0; i < userList.length; i++) {
 			Template tem = new Template();
 			tem.setTemplateId(templateId);
@@ -43,8 +43,8 @@ public class TemplateMsg4 {
 			tem.setTemplateParamList(paras);
 			WeixinUtil.sendTemplateMsg(at, tem);
 		}
-		
-		/*Template tem = new Template();
+		*/
+		Template tem = new Template();
 		tem.setTemplateId(templateId);
 		tem.setToUser("oN_5ev6R_q_3vobSe30GTRnBdWIU");
 		tem.setUrl(Common.HTTP + "/apiTest/msg?id=" + id);
@@ -59,6 +59,6 @@ public class TemplateMsg4 {
 		paras.add(new TemplateParam("content", content, "#173177"));
 		
 		tem.setTemplateParamList(paras);
-		WeixinUtil.sendTemplateMsg(at, tem);*/
+		WeixinUtil.sendTemplateMsg(at, tem);
 	}
 }
