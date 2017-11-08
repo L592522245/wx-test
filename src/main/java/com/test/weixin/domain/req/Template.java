@@ -40,7 +40,7 @@ public class Template {
       
     public String toJSON() {  
         StringBuffer buffer = new StringBuffer();  
-        buffer.append("{");  
+        buffer.append("{");
         buffer.append(String.format("\"touser\":\"%s\"", this.toUser)).append(",");  
         buffer.append(String.format("\"template_id\":\"%s\"", this.templateId)).append(",");  
         buffer.append(String.format("\"url\":\"%s\"", this.url)).append(",");  

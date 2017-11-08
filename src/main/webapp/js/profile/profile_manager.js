@@ -1,79 +1,112 @@
-//搜索用户菜单点击事件
-function searchProfileByUserIdClick() {
-    $('#sp_form')[0].reset();
-    initSearchProfileTable([]);
-    $('#search_profile_table').bootstrapTable('load', []);
-    $('#search_profile_dialog').modal('show');
-
-}
-//设置个人资料菜单点击事件
-function setProfilePortraitClick() {
-
-    //重置表单
-    $('#spp_form')[0].reset();
-
+//获取用户资料
+function getProfilePortraitClick(chatAccount) {
+	
     var tag_list = [
-        "Tag_Profile_IM_Nick",
-        "Tag_Profile_IM_Gender",
+        "Tag_Profile_IM_Nick",//昵称
+        "Tag_Profile_IM_Gender",//性别
+        "Tag_Profile_IM_Image",//头像
+        "Tag_Profile_IM_Location",
         "Tag_Profile_IM_AllowType",
-        "Tag_Profile_IM_Image"
     ];
     var options = {
-        'To_Account': [loginInfo.identifier],
+        'To_Account': [chatAccount],
         'TagList': tag_list
     };
-
+    var data = [];
+    var userInfo = "";
     webim.getProfilePortrait(
         options,
         function (resp) {
             if (resp.UserProfileItem && resp.UserProfileItem.length > 0) {
                 for (var i in resp.UserProfileItem) {
-                    var nick, gender, allowType,image;
+                    var nick, gender, allowType, imageUrl, location;
                     for (var j in resp.UserProfileItem[i].ProfileItem) {
                         switch (resp.UserProfileItem[i].ProfileItem[j].Tag) {
                             case 'Tag_Profile_IM_Nick':
                                 nick = resp.UserProfileItem[i].ProfileItem[j].Value;
                                 break;
                             case 'Tag_Profile_IM_Gender':
-                                gender = resp.UserProfileItem[i].ProfileItem[j].Value;
+                            	switch (resp.UserProfileItem[i].ProfileItem[j].Value) {
+	                                case 'Gender_Type_Male':
+	                                    gender = '男';
+	                                    break;
+	                                case 'Gender_Type_Female':
+	                                    gender = '女';
+	                                    break;
+	                                case 'Gender_Type_Unknown':
+	                                    gender = '未知';
+	                                    break;
+	                            }
                                 break;
                             case 'Tag_Profile_IM_AllowType':
-                                allowType = resp.UserProfileItem[i].ProfileItem[j].Value;
+                            	switch (resp.UserProfileItem[i].ProfileItem[j].Value) {
+	                                case 'AllowType_Type_AllowAny':
+	                                    allowType = '允许任何人';
+	                                    break;
+	                                case 'AllowType_Type_NeedConfirm':
+	                                    allowType = '需要确认';
+	                                    break;
+	                                case 'AllowType_Type_DenyAny':
+	                                    allowType = '拒绝任何人';
+	                                    break;
+	                                default:
+	                                    allowType = '需要确认';
+	                                    break;
+	                            }
                                 break;
                             case 'Tag_Profile_IM_Image':
-                                image = resp.UserProfileItem[i].ProfileItem[j].Value;
+                            	imageUrl = resp.UserProfileItem[i].ProfileItem[j].Value;
+                                break;
+                            case 'Tag_Profile_IM_Location':
+                                location = resp.UserProfileItem[i].ProfileItem[j].Value;
                                 break;
                         }
                     }
-                    $("#spp_image").val(image);
-                    //
-                    $("#spp_nick").val(nick);
-                    //$("input[type=radio][name='spp_gender_radio'][value=" + gender + "]").attr("checked", "checked");//此方法，在IE浏览器下，第一次查看个人资料时，选中没有效果
-                    var spp_gender_radios = document.spp_form.spp_gender_radio;
-                    for (var i = 0; i < spp_gender_radios.length; i++) {
-                        if (spp_gender_radios[i].value == gender) {
-                            spp_gender_radios[i].checked = true;
-                            break;
-                        }
-                    }
-                    //$("input[type=radio][name='spp_allow_type_radio'][value=" + allowType + "]").attr("checked", "checked");
-                    var spp_allow_type_radio = document.spp_form.spp_allow_type_radio;
-                    for (var i = 0; i < spp_allow_type_radio.length; i++) {
-                        if (spp_allow_type_radio[i].value == allowType) {
-                            spp_allow_type_radio[i].checked = true;
-                            break;
-                        }
-                    }
-
+                    data.push({
+                        'To_Account': chatAccount,
+                        'Nick': webim.Tool.formatText2Html(nick),
+                        'Gender': gender,
+                        'AllowType': allowType,
+                        'Image': imageUrl,
+                        'Location': location
+                    });
                 }
             }
+            
+      		userInfo += '<div id="friendAccount" class="weui-cell weui-cell_access cell__c" data-account=' + data[0].To_Account + '>' +
+    		                '<div class="weui-cell__hd" style="position: relative;margin-right: 10px;">' +
+    		                    '<img src="' + data[0].Image + '" style="width: 50px;display: block;border-radius: 50%">' +
+    		                '</div>' +
+    		                '<div class="weui-cell__bd" style="color: black;text-align: left;">' +
+    		                    '<p>' + data[0].Nick + '</p>' +
+    		                    '<p style="font-size: 13px;color: #888888;">' + data[0].Gender + ' ' + data[0].Location + '</p>' +
+    		                '</div>' +
+    		                '<div class="icon-user" onclick="deleteFriend()">' +
+    				        	'<img src="img/garbage.png" style="width: 20px;display: block;">' +
+    				        '</div>' +
+    		            '</div>';
+    				   
+      		dialog(userInfo);
         },
         function (err) {
-            alert(err.ErrorInfo);
+            //alert(err.ErrorInfo);
         }
     );
-    $('#set_profile_portrait_dialog').modal('show');
 }
+
+// 弹出用户信息
+function dialog(userInfo) {
+	dialog = weui.dialog({
+	    title: '好友资料',
+	    content: userInfo,
+	    buttons: [{
+	        label: '确定',
+	        type: 'primary',
+	        onClick: function () { }
+	    }]
+	});
+}
+
 //定义搜索用户表格每行按钮
 function spOperateFormatter(value, row, index) {
     return [

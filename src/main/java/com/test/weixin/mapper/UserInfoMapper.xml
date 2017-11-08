@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 定义Dao的Mapper配置文件 -->
+<mapper namespace="com.test.weixin.mapper.UserInfoMapper">
+
+	<resultMap type="com.test.weixin.domain.userInfo.UserInfo" id="rowMapper">
+		<result property="openid" jdbcType="VARCHAR" column="OPENID" />
+		<result property="nickname" jdbcType="VARCHAR" column="NICKNAME" />
+		<result property="sex" jdbcType="VARCHAR" column="SEX" />
+		<result property="city" jdbcType="VARCHAR" column="CITY" />
+		<result property="country" jdbcType="VARCHAR" column="COUNTRY" />
+		<result property="province" jdbcType="VARCHAR" column="PROVINCE" />
+		<result property="headimgurl" jdbcType="VARCHAR" column="HEADIMGURL" />
+		<result property="unionid" jdbcType="VARCHAR" column="UNIONID" />
+	</resultMap>
+	
+	<sql id="BASE_COLUMN_LIST">
+		OPENID,
+		NICKNAME,
+		SEX,
+		CITY,
+		COUNTRY,
+		PROVINCE,
+		HEADIMGURL,
+		UNIONID
+	</sql>
+	
+	<insert id="insert" parameterType="com.test.weixin.domain.userInfo.UserInfo">
+		INSERT INTO userinfo (
+			OPENID,
+			NICKNAME,
+			SEX,
+			CITY,
+			COUNTRY,
+			PROVINCE,
+			HEADIMGURL,
+			UNIONID
+		) values (
+			#{openid},
+			#{nickname},
+			#{sex},
+			#{city},
+			#{country},
+			#{province},
+			#{headimgurl},
+			#{unionid}
+		)
+	</insert>
+	
+	<delete id="delete" parameterType="java.lang.String">
+		DELETE FROM userinfo WHERE OPENID = #{openid}
+	</delete>
+	
+	<update id="update" parameterType="java.util.Map">
+		UPDATE userinfo set
+			OPENID=#{openid},
+			NICKNAME=#{nickname},
+			SEX=#{sex},
+			CITY=#{city},
+			COUNTRY=#{country},
+			PROVINCE=#{province},
+			HEADIMGURL=#{headimgurl},
+			UNIONID=#{unionid}
+		WHERE
+			OPENID=#{openid}
+	</update>
+	
+	<select id="list" parameterType="java.util.Map">
+		SELECT <include refid="BASE_COLUMN_LIST" />	FROM userinfo WHERE 1=1  
+	</select>
+	
+	<select id="getById" parameterType="java.lang.String" resultMap="rowMapper">
+		SELECT <include refid="BASE_COLUMN_LIST" />	FROM userinfo WHERE OPENID=#{openid}
+	</select>
+	
+	<select id="queryList" parameterType="java.util.Map" resultMap="rowMapper">
+		SELECT 
+			<include refid="BASE_COLUMN_LIST" />	
+		FROM userinfo 
+		WHERE 1=1
+		<if test="openid!=null and openid!=''"> 
+			AND OPENID=#{openid}
+		</if>
+		<if test="nickname!=null and nickname!=''"> 
+			AND NICKNAME=#{nickname}
+		</if>
+	</select>
+</mapper>

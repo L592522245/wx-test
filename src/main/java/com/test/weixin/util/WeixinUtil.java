@@ -124,6 +124,7 @@ public class WeixinUtil {
 			userInfo.setCity(jsonObject.getString("city"));
 			userInfo.setCountry(jsonObject.getString("country"));
 			userInfo.setHeadimgurl(jsonObject.getString("headimgurl"));
+			userInfo.setUnionid(jsonObject.getString("unionid"));
 		}
 		return userInfo;
 	}

@@ -55,8 +55,8 @@ function onPendencyAddNotify(notify) {
     //收到加好友申请，弹出拉取好友申请列表
     getPendency(true);
     var typeCh = "[未决添加]";
-    var pendencyList = notify.PendencyList;
-    var content = "收到以下加好友申请：" + JSON.stringify(pendencyList);
+    var pendencyList = JSON.stringify(pendencyList);
+    var content = "收到以下加好友申请：" + pendencyList.ProfileImNic;
     addFriendSystemMsg(notify.Type, typeCh, content);
 }
 
@@ -102,7 +102,7 @@ function onBlackListDeleteNotify(notify) {
     addFriendSystemMsg(notify.Type, typeCh, content);
 }
 //初始化我的好友系统消息表格
-function initGetMyFriendSystemMsgs(data) {
+/*function initGetMyFriendSystemMsgs(data) {
     $('#get_my_friend_system_msgs_table').bootstrapTable({
         method: 'get',
         cache: false,
@@ -125,12 +125,12 @@ function initGetMyFriendSystemMsgs(data) {
             return '无符合条件的记录';
         }
     });
-}
+}*/
 
 //查看我的好友系统消息
-function getMyFriendSystemMsgs() {
+/*function getMyFriendSystemMsgs() {
     $('#get_my_friend_system_msgs_dialog').modal('show');
-}
+}*/
 
 //增加一条好友系统消息
 function addFriendSystemMsg(type, typeCh, msgContent) {
@@ -140,5 +140,21 @@ function addFriendSystemMsg(type, typeCh, msgContent) {
         "TypeCh": typeCh,
         "MsgContent": webim.Tool.formatText2Html(msgContent)
     });
-    $('#get_my_friend_system_msgs_table').bootstrapTable('append', data);
+    /*$('#get_my_friend_system_msgs_table').bootstrapTable('append', data);*/
+    var date = new Date();
+    var msg = "";
+    msg = '<div class="weui-cell weui-cell_access chat" onclick="chat()">' + 
+	    '<div class="weui-cell__hd" style="position: relative;margin-right: 10px;">' +
+	        '<img src="img/msg-system.png" style="width: 50px;display: block;border-radius: 50%">' +
+	        '<span class="weui-badge" style="position: absolute;top: -.4em;right: -.4em;">1</span>' +
+	    '</div>' +
+	    '<div class="weui-cell__bd">' +
+	        '<p>系统消息</p>' +
+	        '<p style="font-size: 13px;color: #888888;">' + data[0].MsgContent + '</p>' +
+	    '</div>' +
+	    '<div class="cell__rt">' + date.getHours() + ':' + date.getMinutes() + '</div>' +
+	'</div>';
+    $("#chatList").prepend(msg);
+    var span = '<span class="weui-badge weui-badge_dot" style="position: absolute;top: -.2em;right: -.4em;"></span>';
+    $("#tabbar-msg").append(span);
 }

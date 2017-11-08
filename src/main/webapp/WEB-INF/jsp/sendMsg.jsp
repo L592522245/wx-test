@@ -103,7 +103,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			xmlhttp.onreadystatechange=function() {
 				if (xmlhttp.readyState==4 && xmlhttp.status==200)
 			    {
-			      window.location.href =  "apiTest/hintPage";
+			      window.location.href =  "apiTest/sendMsg";
 			    }
 			}
 			xmlhttp.open("POST","apiTest/sendMsg",true);

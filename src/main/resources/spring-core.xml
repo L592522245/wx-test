@@ -45,7 +45,7 @@
 	<!-- 注册Mapper扫描配置器 它将会查找类路径下的映射器并自动将它们创建成MapperFactoryBean， 创建com.test.mapper下的所有接口。 -->
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
-		<property name="basePackage" value="com.test.msg.mapper" />
+		<property name="basePackage" value="com.test.**.mapper" />
 	</bean>
 
 	<!-- 配置基于注解的声明式事物管理。 -->
@@ -67,5 +67,5 @@
 	<!-- 
 		该配置文件用于进行service的bean注册。
  	-->
-	<context:component-scan base-package="com.test.msg.service"/>
+	<context:component-scan base-package="com.test.**.service"/>
 </beans>

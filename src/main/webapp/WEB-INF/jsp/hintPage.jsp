@@ -25,14 +25,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   
   <body>
   	<div class="weui-msg">
-        <div class="weui-msg__icon-area"><i class="weui-icon-success weui-icon_msg"></i></div>
+        <div class="weui-msg__icon-area"><i class="weui-icon-warn weui-icon_msg"></i></div>
         <div class="weui-msg__text-area">
-            <h2 class="weui-msg__title">操作成功</h2>
-            <p class="weui-msg__desc">模板消息发布成功！</p>
+            <h2 class="weui-msg__title">登录失败</h2>
+            <p class="weui-msg__desc">请返回重新登录！</p>
         </div>
         <div class="weui-msg__opr-area">
             <p class="weui-btn-area">
-                <a href="apiTest/sendMsg" class="weui-btn weui-btn_primary">返回</a>
+                <a href="apiTest/oAuth" class="weui-btn weui-btn_primary">返回</a>
             </p>
         </div>
     </div>

@@ -5,8 +5,8 @@ import java.io.PrintWriter;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.DataFormatException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,12 +22,15 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.github.qcloudsms.*;
 import com.test.msg.domain.Msg;
 import com.test.msg.service.MsgService;
+import com.test.tls.tls_sigature.tls_sigature;
+import com.test.tls.tls_sigature.tls_sigature.CheckTLSSignatureResult;
+import com.test.tls.tls_sigature.tls_sigature.GenTLSSignatureResult;
 import com.test.weixin.domain.AccessToken;
 import com.test.weixin.domain.userInfo.UserInfo;
 import com.test.weixin.main.TemplateMsg4;
+import com.test.weixin.service.UserInfoService;
 import com.test.weixin.util.SignUtil;
 import com.test.weixin.util.TokenUtil;
 import com.test.weixin.util.WeixinUtil;
@@ -35,10 +38,31 @@ import com.test.weixin.util.WeixinUtil;
 @Controller
 @RequestMapping("/apiTest")
 public class WeixinApiTest {
+	// 云通信公私钥，云通信创建应用里下载
+    public static String privStr = "-----BEGIN PRIVATE KEY-----\n" +
+	"MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgzlDUO9udpab4qYXo\n" +
+    "eWtLSB0dCXGcv5hoWRt6zr5lE/ShRANCAASKsHGzr8GIY1DczUXd7qFqm2dXjAmx\n" +
+    "fNpIrrw5X+V5RBX/kjGA3uTx2SOqdFJr3SRYXJ2ncuRpQTM1ouK6EYaG\n" +
+	"-----END PRIVATE KEY-----";
+    
+    public static String pubStr = "-----BEGIN PUBLIC KEY-----\n"+
+	"MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEirBxs6/BiGNQ3M1F3e6haptnV4wJ\n" +
+	"sXzaSK68OV/leUQV/5IxgN7k8dkjqnRSa90kWFydp3LkaUEzNaLiuhGGhg==\n" +
+	"-----END PUBLIC KEY-----";	
+    
+    // 云通信SDKAppid
+    private static int SDKAppid = 1400047514;
+    
+    // 云通信帐号类型
+    private static int accountType = 18747;
+    
 	private static Logger log = LoggerFactory.getLogger(WeixinApiTest.class);
 	
 	@Autowired
 	private MsgService msgService;
+	
+	@Autowired
+	private UserInfoService userInfoService;
 	
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public String doGet(HttpServletRequest request, HttpServletResponse response, ModelMap model) {
@@ -232,7 +256,9 @@ public class WeixinApiTest {
 	}
 	
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
-	public String getUserInfo(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws ClientProtocolException, IOException {
+	public String getUserInfo(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws ClientProtocolException, IOException, DataFormatException {
+		
+		// 微信登录获取用户信息
 		HttpSession session = request.getSession();
 		
 		String code = request.getParameter("code");
@@ -244,12 +270,30 @@ public class WeixinApiTest {
 		
 		if(session.getAttribute("code").equals(code)) {
 			userInfo = (UserInfo) session.getAttribute("userInfo");
+			
 			model.put("userInfo", userInfo);
 			if(userInfo == null) {
 				log.info("登陆失败！");
 				return "hintPage";
 			}
 			log.info("登陆成功！openid：" + session.getAttribute("openid") + "，昵称：" + userInfo.getNickname());
+			
+			// 腾讯云生成验证sig
+			GenTLSSignatureResult result = tls_sigature.GenTLSSignatureEx(SDKAppid, (String) session.getAttribute("openid"), privStr);
+			if (0 == result.urlSig.length()) {
+                System.out.println("GenTLSSignatureEx failed: " + result.errMessage);
+            }
+            System.out.println("---\ngenerate sig:\n" + result.urlSig + "\n---");
+		    	
+            CheckTLSSignatureResult checkResult = tls_sigature.CheckTLSSignatureEx(result.urlSig, SDKAppid, (String) session.getAttribute("openid"), pubStr);
+            if(checkResult.verifyResult == false) {
+                System.out.println("CheckTLSSignature failed: " + result.errMessage);
+            }
+            System.out.println("\n---\ncheck sig ok -- expire time " + checkResult.expireTime + " -- init time " + checkResult.initTime + "\n---\n");
+			model.put("sig", result.urlSig);
+			model.put("sdkAppID", SDKAppid);
+			model.put("identifier", (String) session.getAttribute("openid"));
+			model.put("accountType", accountType);
 			return "im/im";
 		} else {
 			session.setAttribute("code", code);
@@ -269,8 +313,30 @@ public class WeixinApiTest {
 					return "hintPage";
 				}
 				
+				if(userInfoService.getUserInfoById(accessToken.getOpenid()) == null) {
+					userInfo.setOpenid(accessToken.getOpenid());
+					// add userinfo to database
+					userInfoService.addUserInfo(userInfo);
+				}
+				
 				model.put("userInfo", userInfo);
 				log.info("登陆成功！openid：" + session.getAttribute("openid") + "，昵称：" + userInfo.getNickname());
+				// 腾讯云生成验证sig
+				GenTLSSignatureResult result = tls_sigature.GenTLSSignatureEx(SDKAppid, (String) session.getAttribute("openid"), privStr);
+				if (0 == result.urlSig.length()) {
+	                System.out.println("GenTLSSignatureEx failed: " + result.errMessage);
+	            }
+	            System.out.println("---\ngenerate sig:\n" + result.urlSig + "\n---");
+			    	
+	            CheckTLSSignatureResult checkResult = tls_sigature.CheckTLSSignatureEx(result.urlSig, SDKAppid, (String) session.getAttribute("openid"), pubStr);
+	            if(checkResult.verifyResult == false) {
+	                System.out.println("CheckTLSSignature failed: " + result.errMessage);
+	            }
+	            System.out.println("---\ncheck sig ok -- expire time " + checkResult.expireTime + " -- init time " + checkResult.initTime + "\n---");
+				model.put("sig", result.urlSig);
+				model.put("sdkAppID", SDKAppid);
+				model.put("identifier", (String) session.getAttribute("openid"));
+				model.put("accountType", accountType);
 				return "im/im";
 			}
 		}

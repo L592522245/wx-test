@@ -88,29 +88,44 @@ body {
 .im_container .cell__c:before {
 	left: 75px;
 }
-.chat-header {
+#addFriendPage, #chatPage {
+	display: none;
 	position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: 500;
+    left: 100%;
+    background-color: #f8f8f8;
+    -webkit-transition: all .4s ease 0s;
+	-moz-transition: all .4s ease 0s;
+	-ms-transition: all .4s ease 0s;
+	-o-transition: all .4s ease 0s;
+	transition: all .4s ease 0s;
+}
+#imHtml {
+	overflow-x: hidden;
+}
+/* 聊天页面*/
+.chat-header {
+	position: fixed;
 	top: 0;
 	width: 100%;
+	background-color: #fff;
 }
-.icon-back {
-	padding-left: 13px;
-	position: relative;
+.chat-inputFile {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	padding: 10px;
+	box-sizing: border-box;
 }
-.icon-back:before {
-	content: " ";
-    display: inline-block;
-    height: 6px;
-    width: 6px;
-    border-width: 0 0 2px 2px;
-    border-color: #c8c8cd;
-    border-style: solid;
-    -webkit-transform: matrix(.71,.71,-.71,.71,0,0);
-    transform: matrix(.71,.71,-.71,.71,0,0);
-    position: relative;
-    top: -2px;
-    position: absolute;
-    top: 50%;
-    margin-top: -4px;
-    right: 2px;
+.chat-inputFile input {
+	width: 100%;
+	background-color: #fff;
+	padding: 7px 5px;
+	border: 0;
+	border-radius: 5px;
+	font-size: 16px;
+	line-height: 16px;
+	box-sizing: border-box;
 }
