@@ -24,15 +24,16 @@ function getHistoryMsgCallback(msgList,prepage) {
 //获取最新的c2c历史消息,用于切换好友聊天，重新拉取好友的聊天消息
 var getLastC2CHistoryMsgs = function (cbOk, cbError) {
     if (selType == webim.SESSION_TYPE.GROUP) {
-        alert('当前的聊天类型为群聊天，不能进行拉取好友历史消息操作');
+        //alert('当前的聊天类型为群聊天，不能进行拉取好友历史消息操作');
         return;
     }
     if(!selToID || selToID=='@TIM#SYSTEM'){
-        alert('当前的聊天id非法，selToID='+selToID);
+        //alert('当前的聊天id非法，selToID='+selToID);
         return;
     }
     var lastMsgTime = 0;//第一次拉取好友历史消息时，必须传0
     var msgKey = '';
+    var reqMsgCount = 10;
     var options = {
         'Peer_Account': selToID, //好友帐号
         'MaxCnt': reqMsgCount, //拉取消息条数
@@ -42,7 +43,6 @@ var getLastC2CHistoryMsgs = function (cbOk, cbError) {
     selSess = null;
     webim.MsgStore.delSessByTypeId(selType, selToID);
 
-
     webim.getC2CHistoryMsgs(
         options,
         function (resp) {
@@ -50,6 +50,7 @@ var getLastC2CHistoryMsgs = function (cbOk, cbError) {
 
             if (resp.MsgList.length == 0) {
                 webim.Log.warn("没有历史消息了:data=" + JSON.stringify(options));
+                console.log("没有历史消息了");
                 return;
             }
             getPrePageC2CHistroyMsgInfoMap[selToID] = {//保留服务器返回的最近消息时间和消息Key,用于下次向前拉取历史消息
@@ -57,7 +58,11 @@ var getLastC2CHistoryMsgs = function (cbOk, cbError) {
                 'MsgKey': resp.MsgKey
             };
             //清空聊天界面
-            document.getElementsByClassName("msgflow")[0].innerHTML = "";
+            $("#chatBody").html("");
+            console.log(resp.MsgList);
+            for(var msg in resp.MsgList) {
+            	addMsg(resp.MsgList[msg]);
+            }
             if (cbOk)
                 cbOk(resp.MsgList);
         },

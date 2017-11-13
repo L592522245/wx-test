@@ -2,14 +2,65 @@
 function addMsg(msg,prepend) {
     var isSelfSend, fromAccount, fromAccountNick, fromAccountImage,sessType, subType;
 
-
     //获取会话类型，目前只支持群聊
     //webim.SESSION_TYPE.GROUP-群聊，
     //webim.SESSION_TYPE.C2C-私聊，
     sessType = msg.getSession().type();
 
+  //解析消息
+
+    //获取消息子类型
+    //会话类型为群聊时，子类型为：webim.GROUP_MSG_SUB_TYPE
+    //会话类型为私聊时，子类型为：webim.C2C_MSG_SUB_TYPE
+    subType = msg.getSubType();
+    var msgCont;
+    switch (subType) {
+        case webim.GROUP_MSG_SUB_TYPE.COMMON://群普通消息
+        	msgCont = convertMsgtoHtml(msg);
+            break;
+        case webim.GROUP_MSG_SUB_TYPE.REDPACKET://群红包消息
+        	msgCont = "[群红包消息]" + convertMsgtoHtml(msg);
+            break;
+        case webim.GROUP_MSG_SUB_TYPE.LOVEMSG://群点赞消息
+            //业务自己可以增加逻辑，比如展示点赞动画效果
+        	msgCont = "[群点赞消息]" + convertMsgtoHtml(msg);
+            //展示点赞动画
+            //showLoveMsgAnimation();
+            break;
+        case webim.GROUP_MSG_SUB_TYPE.TIP://群提示消息
+        	msgCont = "[群提示消息]" + convertMsgtoHtml(msg);
+            break;
+    }
+    
+    //消息列表
+    /*var msgflow = document.getElementsByClassName("msgflow")[0];
+    if(prepend){
+        //300ms后,等待图片加载完，滚动条自动滚动到底部
+        msgflow.insertBefore(onemsg, msgflow.firstChild);
+        if(msgflow.scrollTop == 0 ){
+            setTimeout(function () {
+                msgflow.scrollTop = 0;
+            }, 300);
+        }
+    }else{
+        msgflow.appendChild(onemsg);
+        //300ms后,等待图片加载完，滚动条自动滚动到底部
+        setTimeout(function () {
+            msgflow.scrollTop = msgflow.scrollHeight;
+        }, 300);
+    }*/
+    
     isSelfSend = msg.getIsSend();//消息是否为自己发的
 
+    //消息体
+    var onemsg = "";
+    
+    //时间
+    var date = new Date();
+    var time = msg.getTime();
+    date.setTime(time * 1000);
+    onemsg += '<div class="msg-time">' + date.toTimeString().substring(0, 5) + '</div>';
+    
     fromAccount = msg.getFromAccount();
     if (!fromAccount) {
         return;
@@ -26,6 +77,11 @@ function addMsg(msg,prepend) {
         }else{
             fromAccountImage= friendHeadUrl;
         }
+        
+        onemsg += '<div class="msg-bd">' +
+					  '<div class="msg-heading__from"><img src="' + fromAccountImage + '" style="width:40px;"></div>' +
+					  '<div class="msg-word__from">' + msgCont + '</div>' +
+					'</div>';
     }else{//如果别人发的消息
         var key = webim.SESSION_TYPE.C2C + "_" + fromAccount;
         var info = infoMap[key];
@@ -44,9 +100,21 @@ function addMsg(msg,prepend) {
         } else {
             fromAccountImage = friendHeadUrl;
         }
+        
+        onemsg += '<div class="msg-bd">' +
+					  '<div class="msg-heading__to"><img src="' + fromAccountImage + '" style="width:40px;"></div>' +
+					  '<div class="msg-word__to">' + msgCont + '</div>' +
+					'</div>';
     }
-
-    var onemsg = document.createElement("div");
+    
+    $("#chatBody").append(onemsg);
+    
+    //滚动到底部
+	var h = $("#chatBody").innerHeight();
+	console.log(h);
+	$(window).scrollTop(h);
+    
+    /*var onemsg = document.createElement("div");
     if(msg.sending){
         onemsg.id = "id_"+msg.random;
         //发送中
@@ -63,65 +131,7 @@ function addMsg(msg,prepend) {
     var msgbody = document.createElement("p");
     var msgPre = document.createElement("pre");
     msghead.className = "msghead";
-    msgbody.className = "msgbody";
-
-
-    //如果是发给自己的消息
-    if (!isSelfSend)
-        msghead.style.color = "blue";
-    //昵称  消息时间
-    msghead.innerHTML = "<img class='headurlClass' src='" + fromAccountImage + "'>" + "&nbsp;&nbsp;" + webim.Tool.formatText2Html(fromAccountNick + "&nbsp;&nbsp;" + webim.Tool.formatTimeStamp(msg.getTime()));
-
-
-    //解析消息
-
-    //获取消息子类型
-    //会话类型为群聊时，子类型为：webim.GROUP_MSG_SUB_TYPE
-    //会话类型为私聊时，子类型为：webim.C2C_MSG_SUB_TYPE
-    subType = msg.getSubType();
-
-
-    switch (subType) {
-
-        case webim.GROUP_MSG_SUB_TYPE.COMMON://群普通消息
-            msgPre.innerHTML = convertMsgtoHtml(msg);
-            break;
-        case webim.GROUP_MSG_SUB_TYPE.REDPACKET://群红包消息
-            msgPre.innerHTML = "[群红包消息]" + convertMsgtoHtml(msg);
-            break;
-        case webim.GROUP_MSG_SUB_TYPE.LOVEMSG://群点赞消息
-            //业务自己可以增加逻辑，比如展示点赞动画效果
-            msgPre.innerHTML = "[群点赞消息]" + convertMsgtoHtml(msg);
-            //展示点赞动画
-            //showLoveMsgAnimation();
-            break;
-        case webim.GROUP_MSG_SUB_TYPE.TIP://群提示消息
-            msgPre.innerHTML = "[群提示消息]" + convertMsgtoHtml(msg);
-            break;
-    }
-
-    msgbody.appendChild(msgPre);
-
-    onemsg.appendChild(msghead);
-    onemsg.appendChild(msgbody);
-    //消息列表
-    var msgflow = document.getElementsByClassName("msgflow")[0];
-    if(prepend){
-        //300ms后,等待图片加载完，滚动条自动滚动到底部
-        msgflow.insertBefore(onemsg, msgflow.firstChild);
-        if(msgflow.scrollTop == 0 ){
-            setTimeout(function () {
-                msgflow.scrollTop = 0;
-            }, 300);
-        }
-    }else{
-        msgflow.appendChild(onemsg);
-        //300ms后,等待图片加载完，滚动条自动滚动到底部
-        setTimeout(function () {
-            msgflow.scrollTop = msgflow.scrollHeight;
-        }, 300);
-    }
-
+    msgbody.className = "msgbody";*/
 
 }
 //把消息转换成Html

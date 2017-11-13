@@ -10,7 +10,7 @@ function onFriendAddNotify(notify) {
     //好友表发生变化，需要重新加载好友列表或者单独添加notify.Accounts好友帐号
     //getAllFriend(getAllFriendsCallbackOK);
     var typeCh = "[好友表添加]";
-    var content = "新增以下好友：" + notify.Accounts;
+    var content = "新增好友通知";
     addFriendSystemMsg(notify.Type, typeCh, content);
 }
 
@@ -26,7 +26,7 @@ function onFriendDeleteNotify(notify) {
     //好友表发生变化，需要重新加载好友列表或者单独删除notify.Accounts好友帐号
     //getAllFriend(getAllFriendsCallbackOK);
     var typeCh = "[好友表删除]";
-    var content = "减少以下好友：" + notify.Accounts;
+    var content = "删除好友通知";
     addFriendSystemMsg(notify.Type, typeCh, content);
 }
 
@@ -70,7 +70,7 @@ function onPendencyAddNotify(notify) {
 function onPendencyDeleteNotify(notify) {
     webim.Log.info("执行 未决删除 回调：" + JSON.stringify(notify));
     var typeCh = "[未决删除]";
-    var content = "以下好友未决已被删除：" + notify.Accounts;
+    var content = "好友未决已被删除";
     addFriendSystemMsg(notify.Type, typeCh, content);
 }
 
@@ -84,7 +84,7 @@ function onPendencyDeleteNotify(notify) {
 function onBlackListAddNotify(notify) {
     webim.Log.info("执行 黑名单添加 回调：" + JSON.stringify(notify));
     var typeCh = "[黑名单添加]";
-    var content = "新增以下黑名单：" + notify.Accounts;
+    var content = "黑名单变更通知";
     addFriendSystemMsg(notify.Type, typeCh, content);
 }
 
@@ -98,7 +98,7 @@ function onBlackListAddNotify(notify) {
 function onBlackListDeleteNotify(notify) {
     webim.Log.info("执行 黑名单删除 回调：" + JSON.stringify(notify));
     var typeCh = "[黑名单删除]";
-    var content = "减少以下黑名单：" + notify.Accounts;
+    var content = "黑名单变更通知";
     addFriendSystemMsg(notify.Type, typeCh, content);
 }
 //初始化我的好友系统消息表格
@@ -143,7 +143,7 @@ function addFriendSystemMsg(type, typeCh, msgContent) {
     /*$('#get_my_friend_system_msgs_table').bootstrapTable('append', data);*/
     var date = new Date();
     var msg = "";
-    msg = '<div class="weui-cell weui-cell_access chat" onclick="chat()">' + 
+    msg = '<div class="weui-cell weui-cell_access chat" onclick="chat()" data-msgtype="system">' + 
 	    '<div class="weui-cell__hd" style="position: relative;margin-right: 10px;">' +
 	        '<img src="img/msg-system.png" style="width: 50px;display: block;border-radius: 50%">' +
 	        '<span class="weui-badge" style="position: absolute;top: -.4em;right: -.4em;">1</span>' +

@@ -96,11 +96,11 @@ body {
     z-index: 500;
     left: 100%;
     background-color: #f8f8f8;
-    -webkit-transition: all .4s ease 0s;
-	-moz-transition: all .4s ease 0s;
-	-ms-transition: all .4s ease 0s;
-	-o-transition: all .4s ease 0s;
-	transition: all .4s ease 0s;
+    -webkit-transition: all .2s ease 0s;
+	-moz-transition: all .2s ease 0s;
+	-ms-transition: all .2s ease 0s;
+	-o-transition: all .2s ease 0s;
+	transition: all .2s ease 0s;
 }
 #imHtml {
 	overflow-x: hidden;
@@ -111,13 +111,15 @@ body {
 	top: 0;
 	width: 100%;
 	background-color: #fff;
+	z-index: 100;
 }
 .chat-inputFile {
-	position: absolute;
-	bottom: 0;
-	width: 100%;
-	padding: 10px;
-	box-sizing: border-box;
+	position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: #F8F8F8;
 }
 .chat-inputFile input {
 	width: 100%;
@@ -128,4 +130,78 @@ body {
 	font-size: 16px;
 	line-height: 16px;
 	box-sizing: border-box;
+}
+.chat-body {
+    min-height: 100%;
+    padding: 47px 20px 53px 20px;
+    box-sizing: border-box;
+}
+.msg-bd {
+	overflow: hidden;
+}
+.msg-time {
+	font-size: 12px;
+    text-align: center;
+    border-radius: 10px;
+    padding: 1px;
+    margin: 10px 0;
+    color: #666;
+}
+.msg-heading__to {
+	float: left;
+    margin-right: 20px;
+}
+.msg-word__to {
+	position: relative;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    word-wrap: break-word;
+    float: left;
+    max-width: 75%;
+}
+.msg-word__to:before {
+	content: '';
+    position: absolute;
+    left: -4px;
+    top: 16px;
+    height: 8px;
+    width: 8px;
+    border-width: 0 0 2px 2px;
+    -webkit-transform: matrix(.71,.71,-.71,.71,0,0);
+    transform: matrix(.71,.71,-.71,.71,0,0);
+    background-color: #fff;
+}
+.msg-heading__from {
+	float: right;
+    margin-left: 20px;
+}
+.msg-word__from {
+	position: relative;
+    background-color: #1aad19;
+    padding: 10px;
+    border-radius: 5px;
+    word-wrap: break-word;
+    float: right;
+    max-width: 75%;
+}
+.msg-word__from:after {
+	content: '';
+    position: absolute;
+    right: -4px;
+    top: 16px;
+    height: 8px;
+    width: 8px;
+    border-width: 2px 2px 0 0;
+    -webkit-transform: matrix(.71,.71,-.71,.71,0,0);
+    transform: matrix(.71,.71,-.71,.71,0,0);
+    background-color: #1aad19;
+}
+.summaryInfo {
+	font-size: 13px;
+    color: #888888;
+    max-width: 270px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }

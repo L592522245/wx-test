@@ -1,19 +1,15 @@
 //发送消息(文本或者表情)
-
-function onSendMsg() {
-
-    if (!selToID) {
-        alert("你还没有选中好友或者群组，暂不能聊天");
-        $("#send_msg_text").val('');
-        return;
-    }
+function onSendMsg(msg) {
+	
+	var msgContent;
+	if(msg != null) {
+		msgContent = msg;
+	}
     //获取消息内容
-    var msgContent = document.getElementsByClassName("msgedit")[0].value;
+    msgContent = $("#chatMsg").val();
     var msgLen = webim.Tool.getStrBytes(msgContent);
 
     if (msgContent.length < 1) {
-        alert("发送的消息不能为空!");
-        $("#send_msg_text").val('');
         return;
     }
     var maxLen, errInfo;
@@ -25,7 +21,7 @@ function onSendMsg() {
         errInfo = "消息长度超出限制(最多" + Math.round(maxLen / 3) + "汉字)";
     }
     if (msgLen > maxLen) {
-        alert(errInfo);
+        weui.alert(errInfo);
         return;
     }
     //发消息处理
@@ -35,7 +31,7 @@ function onSendMsg() {
 
 function handleMsgSend(msgContent) {
     if (!selSess) {
-        var selSess = new webim.Session(selType, selToID, selToID, friendHeadUrl, Math.round(new Date().getTime() / 1000));
+        var selSess = new webim.Session(selType, selToID, selToID, Math.round(new Date().getTime() / 1000));
     }
     var isSend = true; //是否为自己发送
     var seq = -1; //消息序列，-1表示sdk自动生成，用于去重
@@ -103,8 +99,7 @@ function handleMsgSend(msgContent) {
     msg.sending = 1;
     msg.originContent = msgContent;
     addMsg(msg);
-    $("#send_msg_text").val('');
-    turnoffFaces_box();
+    $("#chatMsg").val('');
 
     webim.sendMsg(msg, function(resp) {
         //发送成功，把sending清理
@@ -112,14 +107,14 @@ function handleMsgSend(msgContent) {
         webim.Tool.setCookie("tmpmsg_" + selToID, '', 0);
     }, function(err) {
         //alert(err.ErrorInfo);
-        //提示重发
+        //直接重发
         showReSend(msg);
     });
 }
 
 function showReSend(msg) {
     //resend a dom
-    var resendBtn = $('<a href="javascript:;">重发</a>');
+    /*var resendBtn = $('<a href="javascript:;">重发</a>');
     //绑定重发事件
     resendBtn.click(function() {
         //删除当前的dom
@@ -127,7 +122,9 @@ function showReSend(msg) {
         //发消息处理
         handleMsgSend(msg.originContent);
     });
-    $("#id_" + msg.random).find(".spinner").empty().append(resendBtn);
+    $("#id_" + msg.random).find(".spinner").empty().append(resendBtn);*/
+    
+    handleMsgSend(msg.originContent);
 }
 
 

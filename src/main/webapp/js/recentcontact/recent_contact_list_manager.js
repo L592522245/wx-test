@@ -1,41 +1,5 @@
-//初始化我的最近会话表格
-function initGetRecentContactListTable(data) {
-    $('#get_recent_contact_list_table').bootstrapTable({
-        method: 'get',
-        cache: false,
-        height: 500,
-        striped: true,
-        pagination: true,
-        pageSize: pageSize,
-        pageNumber: 1,
-        pageList: [10, 20, 50, 100],
-        search: true,
-        showColumns: true,
-        clickToSelect: true,
-        columns: [
-            {field: "SessionType", title: "会话类型(英文)", align: "center", valign: "middle", sortable: "true", visible: false},
-            {field: "SessionTypeZh", title: "会话类型", align: "center", valign: "middle", sortable: "true"},
-            {field: "SessionId", title: "会话ID", align: "center", valign: "middle", sortable: "true"},
-            {field: "SessionNick", title: "会话昵称", align: "center", valign: "middle", sortable: "true"},
-            {field: "SessionImage", title: "会话头像", align: "center", valign: "middle", sortable: "true", visible: false},
-            {field: "C2cAccount", title: "发送者ID", align: "center", valign: "middle", sortable: "true"},
-            {field: "C2cNick", title: "发送者昵称", align: "center", valign: "middle", sortable: "true"},
-            {field: "UnreadMsgCount", title: "未读数", align: "center", valign: "middle", sortable: "true"},
-            {field: "MsgSeq", title: "Seq", align: "center", valign: "middle", sortable: "true"},
-            {field: "MsgRandom", title: "Random", align: "center", valign: "middle", sortable: "true"},
-            {field: "MsgTimeStamp", title: "时间", align: "center", valign: "middle", sortable: "true"},
-            {field: "MsgShow", title: "内容", align: "center", valign: "middle", sortable: "true"}
-        ],
-        data: data,
-        formatNoMatches: function () {
-            return '无符合条件的记录';
-        }
-    });
-}
-
 //我的最近联系人
 var getRecentContactList = function () {
-    initGetRecentContactListTable([]);
     var options = {
         'Count': reqRecentSessCount//最近的会话数
     };
@@ -45,22 +9,26 @@ var getRecentContactList = function () {
             var data = [];
             var tempSess,tempSessMap={};//临时会话变量
             if (resp.SessionItem && resp.SessionItem.length > 0) {
-
+            	
+            	// 添加消息到消息窗口
+                var chatList = $("#chatList");
+                chatList.html("");
+                var chat = "";
                 for (var i in resp.SessionItem) {
                     var item = resp.SessionItem[i];
                     var type = item.Type;//接口返回的会话类型
                     var sessType,typeZh, sessionId, sessionNick='', sessionImage='', senderId='', senderNick='';
                     if (type == webim.RECENT_CONTACT_TYPE.C2C) {//私聊
                         typeZh = '私聊';
-                        sessType=webim.SESSION_TYPE.C2C;//设置会话类型
+                        sessType = webim.SESSION_TYPE.C2C;//设置会话类型
                         sessionId = item.To_Account;//会话id，私聊时为好友ID或者系统账号（值为@TIM#SYSTEM，业务可以自己决定是否需要展示），注意：从To_Account获取,
 
                         if(sessionId=='@TIM#SYSTEM'){//先过滤系统消息，，
                             webim.Log.warn('过滤好友系统消息,sessionId='+sessionId);
                             continue;
                         }
-                        var key=sessType+"_"+sessionId;
-                        var c2cInfo=infoMap[key];
+                        var key = sessType + "_" + sessionId;
+                        var c2cInfo = infoMap[key];
                         if (c2cInfo && c2cInfo.name) {//从infoMap获取c2c昵称
                             sessionNick = c2cInfo.name;//会话昵称，私聊时为好友昵称，接口暂不支持返回，需要业务自己获取（前提是用户设置过自己的昵称，通过拉取好友资料接口（支持批量拉取）得到）
                         }else{//没有找到或者没有设置过
@@ -68,9 +36,9 @@ var getRecentContactList = function () {
                         }
                         if (c2cInfo && c2cInfo.image) {//从infoMap获取c2c头像
                             sessionImage = c2cInfo.image;//会话头像，私聊时为好友头像，接口暂不支持返回，需要业务自己获取（前提是用户设置过自己的昵称，通过拉取好友资料接口（支持批量拉取）得到）
-                        }else{//没有找到或者没有设置过
+                        }/*else{//没有找到或者没有设置过
                             sessionImage = friendHeadUrl;//会话头像，如果为空，默认将其设置demo自带的头像
-                        }
+                        }*/
                         senderId=senderNick='';//私聊时，这些字段用不到，直接设置为空
 
                     } else if (type == webim.RECENT_CONTACT_TYPE.GROUP) {//群聊
@@ -130,8 +98,8 @@ var getRecentContactList = function () {
                         continue;
                     }
 
-                    if (sessionNick.length > maxNameLen) {//帐号或昵称过长，截取一部分，出于demo需要，业务可以自己决定
-                        sessionNick = sessionNick.substr(0, maxNameLen) + "...";
+                    if (sessionNick.length > 10) {//帐号或昵称过长，截取一部分，出于demo需要，业务可以自己决定
+                        sessionNick = sessionNick.substr(0, 10) + "...";
                     }
 
                     tempSess=tempSessMap[sessType+"_"+sessionId];
@@ -152,19 +120,29 @@ var getRecentContactList = function () {
                             MsgShow: item.MsgShow//消息内容
                         });
                     }
+                    
+                    chat += '<div class="weui-cell weui-cell_access chat" onclick="chat(\'friend\', \'' + data[i].SessionNick + '\', \'' + data[i].SessionId + '\')" data-msgtype="system">' + 
+							    '<div class="weui-cell__hd" style="position: relative;margin-right: 10px;">' +
+							    '<img src="' + data[i].SessionImage + '" style="width: 50px;display: block;border-radius: 50%">' +
+							'</div>' +
+							'<div class="weui-cell__bd">' +
+							    '<p>' + data[i].SessionNick + '</p>' +
+							    '<p class="summaryInfo">' + data[i].MsgShow + '</p>' +
+							'</div>' +
+							'<div class="cell__rt">' + data[i].MsgTimeStamp.substring(11, 16) + '</div>' +
+							'</div>';
                 }
             }
-            $('#get_recent_contact_list_table').bootstrapTable('load', data);
-            $('#get_recent_contact_list_dialog').modal('show');
+            $("#chatList").prepend(chat);
         },
         function (err) {
-            alert(err.ErrorInfo);
+            //alert(err.ErrorInfo);
         }
     );
 };
 
 //初始化聊天界面左侧最近会话列表
-var initRecentContactList = function (cbOK, cbErr) {
+/*var initRecentContactList = function (cbOK, cbErr) {
 
     var options = {
         'Count': reqRecentSessCount//要拉取的最近会话条数
@@ -331,4 +309,4 @@ function initUnreadMsgCount(){
         }
     }
 }
-
+*/

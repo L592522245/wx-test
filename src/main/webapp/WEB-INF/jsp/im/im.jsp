@@ -24,16 +24,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   
   <body>
 	<div class="im_container">
-		<!-- <div class="im-header">
-			<div class="weui-cell">
-                <div class="weui-cell__bd">
-                    <div class="weui-cell__hd" style="position: relative;margin-right: 10px;">
-	                    <img src="${ userInfo.headimgurl }" style="width: 30px;display: block;border-radius: 50%">
-	                </div>
-                </div>
-                <div class="icon-plus"></div>
-            </div>
-		</div> -->
 	    <div class="weui-tab" id="tab">
             <div class="weui-tab__panel">
             	<!-- 消息 -->
@@ -86,18 +76,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			                <div id="myFriendCount" class="cell__rb"></div>
 			            </div>
 			            <!-- 好友列表-点击后加载 -->
-			            <div id="myFriendList" style="display: none;">
-				            <!-- <div class="weui-cell weui-cell_access cell__c">
-				                <div class="weui-cell__hd" style="position: relative;margin-right: 10px;">
-				                    <img src="img/boy.png" style="width: 50px;display: block;border-radius: 50%">
-				                    <span class="weui-badge" style="position: absolute;top: -.4em;right: -.4em;">8</span>
-				                </div>
-				                <div class="weui-cell__bd">
-				                    <p>名称</p>
-				                    <p style="font-size: 13px;color: #888888;">摘要信息</p>
-				                </div>
-				            </div> -->
-				        </div>
+			            <div id="myFriendList" style="display: none;"></div>
 			            <div id="myGroup" class="weui-cell cell__p" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
 			                <div class="weui-cell__bd">
 			                    <span style="vertical-align: middle">我的群聊</span>
@@ -163,21 +142,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	            </div>
 	            <a href="javascript:" class="weui-search-bar__cancel-btn" id="">取消</a>
 	        </div>
-	        <div id="searchFriendResult" class="weui-cells" style="margin-top:0;">
-	            <!-- <div class="weui-cell weui-cell_access cell__c">
-	                <div class="weui-cell__hd" style="position: relative;margin-right: 10px;">
-	                    <img src="img/boy.png" style="width: 50px;display: block;border-radius: 50%">
-	                    <span class="weui-badge" style="position: absolute;top: -.4em;right: -.4em;">8</span>
-	                </div>
-	                <div class="weui-cell__bd">
-	                    <p>名称</p>
-	                    <p style="font-size: 13px;color: #888888;">摘要信息</p>
-	                </div>
-	            </div> -->
-			</div>
+	        <div id="searchFriendResult" class="weui-cells" style="margin-top:0;"></div>
         </div>
         <!-- 聊天页面 -->
-        <div id="chatPage">
+        <div id="chatPage" data-toaccount="">
         	<div class="chat-header">
 				<div class="weui-cell">
 			        <div class="weui-cell__bd">
@@ -188,9 +156,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			        </div>
 			    </div>
 			</div>
-			
+			<div id="chatBody" class="chat-body">
+				<div class="msg-bd">
+				  <div class="msg-headimg__to"><img src="" style="width:50px;"></div>
+				  <div class="msg-word__to"></div>
+				</div>
+			</div>
 			<div class="chat-inputFile">
-				<input type="text" >
+				<input id="chatMsg" type="text" onkeyup="sendMsg()">
 			</div>
         </div>
 	</div>
@@ -242,6 +215,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <script type="text/javascript" src="js/msg/receive_friend_system_msg.js"></script>
   <!--web im 监听资料系统通知消息 示例代码-->
   <script type="text/javascript" src="js/msg/receive_profile_system_msg.js"></script>
+  <!--web im 获取我的最近联系人 示例代码-->
+  <script type="text/javascript" src="js/recentcontact/recent_contact_list_manager.js"></script>
   <script>
   	document.body.addEventListener("touchstart", function () {});
   	
@@ -278,6 +253,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         'headurl': null //当前用户默认头像，选填，如果设置过头像，则可以通过拉取个人资料接口来得到头像信息
     };
     
+    var AdminAcount = 'admin';
+    var selType = webim.SESSION_TYPE.C2C; //当前聊天类型
+    var selToID = null; //当前选中聊天id（当聊天类型为私聊时，该值为好友帐号，否则为群号）
+    var selSess = null; //当前聊天会话对象
+    var recentSessMap = {}; //保存最近会话列表
+    var reqRecentSessCount = 50; //每次请求的最近会话条数，业务可以自定义
+    
     //存放c2c或者群信息（c2c用户：c2c用户id，昵称，头像；群：群id，群名称，群头像）
     var infoMap = {}; //初始化时，可以先拉取我的好友和我的群组信息
 
@@ -288,35 +270,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     var getPrePageC2CHistroyMsgInfoMap = {}; //保留下一次拉取好友历史消息的信息
     var getPrePageGroupHistroyMsgInfoMap = {}; //保留下一次拉取群历史消息的信息
 
-    //监听新消息事件
-	//newMsgList 为新消息数组，结构为[Msg]
-	function onMsgNotify(newMsgList) {
-	    //console.warn(newMsgList);
-	    var sess, newMsg;
-	    //获取所有聊天会话
-	    var sessMap = webim.MsgStore.sessMap();
-	
-	    for (var j in newMsgList) {//遍历新消息
-	        newMsg = newMsgList[j];
-	
-	        if (newMsg.getSession().id() == selToID) {//为当前聊天对象的消息
-	            selSess = newMsg.getSession();
-	            //在聊天窗体中新增一条消息
-	            //console.warn(newMsg);
-	            addMsg(newMsg);
-	        }
-	    }
-	    //消息已读上报，以及设置会话自动已读标记
-	    webim.setAutoRead(selSess, false, true);
-	
-	    for (var i in sessMap) {
-	        sess = sessMap[i];
-	        if (selToID != sess.id()) {//更新其他聊天对象的未读消息数
-	            updateSessDiv(sess.type(), sess.id(), sess.unread());
-	        }
-	    }
-	}
-    
     //监听（多终端同步）群系统消息方法，方法都定义在receive_group_system_msg.js文件中
     //注意每个数字代表的含义，比如，
     //1表示监听申请加群消息，2表示监听申请加群被同意消息，3表示监听申请加群被拒绝消息
@@ -419,21 +372,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         'isAccessFormalEnv': isAccessFormalEnv, //是否访问正式环境，默认访问正式，选填
         'isLogOn': isLogOn //是否开启控制台打印日志,默认开启，选填
     }
-    
-    // 获取好友列表
-    var friendsOptions = {
-        'From_Account': loginInfo.identifier,
-        'TimeStamp': 0,
-        'StartIndex': 0,
-        'GetCount': 100,
-        'LastStandardSequence': 0,
-        "TagList":
-        [
-            "Tag_Profile_IM_Nick",
-            "Tag_Profile_IM_Image"
-        ]
-    };
-    
+
     var sex = "";
     if("${ userInfo.sex }" == "男") {
     	sex = "Gender_Type_Male";
@@ -443,121 +382,33 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     	sex = "Gender_Type_Unknown";
     }
     
-    var profile_item = [
-        {
-            "Tag": "Tag_Profile_IM_Nick",
-            "Value": '${ userInfo.nickname }'
-        },
-        {
-            "Tag": "Tag_Profile_IM_Image",
-            "Value": '${ userInfo.headimgurl }'
-        },
-        {
-            "Tag": "Tag_Profile_IM_AllowType",
-            "Value": "AllowType_Type_NeedConfirm"
-        },
-        {
-            "Tag": "Tag_Profile_IM_Gender",
-            "Value": sex
-        },
-        {
-            "Tag": "Tag_Profile_IM_Location",
-            "Value": '${ userInfo.city }'
-        }
-    ];
-    
-    var profileOptions = {
-        'ProfileItem': profile_item
-    };
-    
     //sdk登录
     webim.login(
         loginInfo, listeners, options,
         function (resp) {
-            /* loginInfo.identifierNick = resp.identifierNick;//设置当前用户昵称
-            loginInfo.headurl = resp.headurl;//设置当前用户头像  */
+        	var data = [];
+        	data.push({
+        		'nick': '${ userInfo.nickname }',
+        		'image': '${ userInfo.headimgurl }',
+        		'allowType': 'AllowType_Type_NeedConfirm',
+        		'gender': sex,
+        		'location': '${ userInfo.city }'
+        	});
+            loginInfo.identifierNick = resp.identifierNick;//设置当前用户昵称
+            loginInfo.headurl = resp.headurl;//设置当前用户头像 
             if(resp.identifierNick == null || resp.headurl == undefined) {
-            	webim.setProfilePortrait(
-		            profileOptions,
-		            function (resp) {
-		                console.log('设置个人资料成功');
-		            },
-		            function (err) {
-		                console.log(err.ErrorInfo);
-		            }
-		   		);
+            	setProfilePortrait(data);
             }
             console.log("login success");
-            getAllFriend();
+            getMyFriend();// 拉取好友列表
+            initInfoMapByMyFriends(); //将好友信息保存到infoMap
+            getPendency(true);// 拉取好友申请会话
+            getRecentContactList(); // 拉取最近消息
         },
         function (err) {
             //alert(err.ErrorInfo);
         }
     );
-    
-    function getAllFriend() {
-    	// 拉取好友列表
-        webim.getAllFriend(
-			friendsOptions,
-			function (resp) {
-				console.log("get friends success");
-			    //清空聊天对象列表
-			    var sessList = document.getElementById("myFriendList");
-			    sessList.innerHTML = "";
-			    if (resp.ErrorCode == "0") {
-			        var friends = resp.InfoItem;
-			        if (!friends || friends.length == 0) {
-			        	console.log("no friend");
-			        	myFriendCount.innerHTML = 0;
-			            return;
-			        }
-			        
-			        var count = friends.length;
-			    	myFriendCount.innerHTML = count;
-			        
-			        var friendCard = "";
-			        for (var i = 0; i < count; i++) {
-			            var friend_name, friend_headUrl, friend_account;
-			            friend_account = friends[i].Info_Account;
-			            if (friends[i].SnsProfileItem && friends[i].SnsProfileItem[0] 
-			                && friends[i].SnsProfileItem[0].Tag) {
-			                friend_name = friends[i].SnsProfileItem[0].Value;
-			                friend_headUrl = friends[i].SnsProfileItem[1].Value;
-			            }
-			            if (friend_name.length > 7) {//帐号或昵称过长，截取一部分
-			                friend_name = friend_name.substr(0, 7) + "...";
-			            }
-			            //增加一个好友div
-			            friendCard += '<div class="weui-cell weui-cell_access cell__c friend chat" data-account="' + friend_account + '" onclick="chat()">' +
-					                '<div class="weui-cell__hd" style="position: relative;margin-right: 10px;">' +
-					                    '<img src="' + friend_headUrl + '" style="width: 50px;display: block;border-radius: 50%">' +
-					                '</div>' +
-					                '<div class="weui-cell__bd">' +
-					                    '<p>' + friend_name + '</p>' +
-					                '</div>' +
-					            '</div>';
-			        }
-			        myFriendList.innerHTML = friendCard;
-			        /* if (selType == SessionType.C2C) {
-			            //清空聊天界面
-			            document.getElementsByClassName("msgflow")[0].innerHTML = "";
-			            //默认选中当前聊天对象
-			            selToID = friends[0].Info_Account;
-			            //设置当前选中用户的样式为选中样式
-			            var selSessDiv = $("#sessDiv_" + selToID)[0];
-			            selSessDiv.className = "sessinfo-sel";
-			            var selBadgeDiv = $("#badgeDiv_" + selToID)[0];
-			            selBadgeDiv.style.display = "none";
-			        } 
-			        if (cbOK)
-			            cbOK();*/
-			    }
-			},
-			function (err) {
-			    //alert(err.ErrorInfo);
-			}
-  		);
-    }
     
     // 添加朋友页面
    	var addFriendPage = document.getElementById("addFriendPage");
@@ -649,84 +500,55 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		        label: '确定',
 		        type: 'primary',
 		        onClick: function(){ 
-		        	var addWording = document.getElementById("addWording").value;
-		        	addFriend(addWording);
+		        	applyAddFriend();
 				}
 		    }]
 		});
    	}
-    function addFriend(addWording) {
-    	var friendAccount = document.getElementById("friendAccount").getAttribute("data-account");
-    	var add_friend_item = [
-	        {
-	            "To_Account": friendAccount,
-	            "AddSource": "AddSource_Type_Unknow",
-	            "AddWording": addWording //加好友附言，可为空
-	        }
-	    ];
-	    var options = {
-	        'From_Account': loginInfo.identifier,
-	        'AddFriendItem': add_friend_item
-	    };
-	
-	    webim.applyAddFriend(
-	        options,
-	        function (resp) {
-	            if (resp.Fail_Account && resp.Fail_Account.length > 0) {
-	                for (var i in resp.ResultItem) {
-	                    weui.alert(resp.ResultItem[i].ResultInfo);
-	                    break;
-	                }
-	            } else {
-	                weui.toast("已发送请求！", 1000);
-	            }
-	        },
-	        function (err) {
-	            //alert(err.ErrorInfo);
-	        }
-	    );
-    }
     
     // 进入聊天页面
-    function chat() {
+    function chat(msgType, nickname, account) {
+    	if(!account) account = "";
     	location.hash = "chat";
-  		var nickname = $(".chat .weui-cell__bd p").html();
-  		$("#toAccountNickname").html(nickname); 
+  		$("#toAccountNickname").html(nickname);
+  		$("#chatPage").data("toaccount", account);
+  		selToID = $("#chatPage").data("toaccount");
+  		$("#chatBody").html("");
+  		if(msgType == "system") {
+  			getPendency(false);
+  		} else if(msgType == "friend") {
+  			getLastC2CHistoryMsgs();
+  		}
     }
+    
+  	//发送消息
+  	function sendMsg() {
+  		var code = event.keyCode;
+		if(code == 13){
+			onSendMsg($("#chatMsg").val());
+		}
+  	}
     
     // 拉取用户资料
     var dialog;
   	function userInfo() {
-  		var chatAccount = $(".friend").data("account");
+  		var chatAccount = $("#chatPage").data("toaccount");
   		getProfilePortraitClick(chatAccount);
   	}
   	
   	// 删除好友
-  	function deleteFriend() {
+  	function deleteF() {
   		dialog.hide();
-  		var to_account = [];
-	    to_account = [
-	        $("#friendAccount").data("account")
-	    ];
-	    
-	    var options = {
-	        'From_Account': loginInfo.identifier,
-	        'To_Account': to_account,
-	        //Delete_Type_Both'//单向删除："Delete_Type_Single", 双向删除："Delete_Type_Both".
-	        'DeleteType': 'Delete_Type_Both'
-	    };
-	    
-	    webim.deleteFriend(
-	        options,
-	        function (resp) {
-	            //重新加载好友列表
-	            getAllFriend();
-	            weui.toast('删除好友成功', 1000);
-	        },
-	        function (err) {
-	            //alert(err.ErrorInfo);
-	        }
-	    );
+  		deleteFriend();
+  		location.hash = "";
   	}
+  	
+  	/* $(window).resize(function() {
+  		//滚动到底部
+  		setTimeout(function() {
+  			var h = $("#chatPage").innerHeight();
+  			$("#chatPage").scrollTop(h);
+  		}, 400);
+	}); */
   </script>
 </html>

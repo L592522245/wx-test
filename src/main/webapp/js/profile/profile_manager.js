@@ -17,6 +17,8 @@ function getProfilePortraitClick(chatAccount) {
     webim.getProfilePortrait(
         options,
         function (resp) {
+        	console.log("获取用户资料");
+        	console.log(resp);
             if (resp.UserProfileItem && resp.UserProfileItem.length > 0) {
                 for (var i in resp.UserProfileItem) {
                     var nick, gender, allowType, imageUrl, location;
@@ -81,7 +83,7 @@ function getProfilePortraitClick(chatAccount) {
     		                    '<p>' + data[0].Nick + '</p>' +
     		                    '<p style="font-size: 13px;color: #888888;">' + data[0].Gender + ' ' + data[0].Location + '</p>' +
     		                '</div>' +
-    		                '<div class="icon-user" onclick="deleteFriend()">' +
+    		                '<div class="icon-user" onclick="deleteF()">' +
     				        	'<img src="img/garbage.png" style="width: 20px;display: block;">' +
     				        '</div>' +
     		            '</div>';
@@ -96,7 +98,7 @@ function getProfilePortraitClick(chatAccount) {
 
 // 弹出用户信息
 function dialog(userInfo) {
-	dialog = weui.dialog({
+	weui.dialog({
 	    title: '好友资料',
 	    content: userInfo,
 	    buttons: [{
@@ -107,82 +109,6 @@ function dialog(userInfo) {
 	});
 }
 
-//定义搜索用户表格每行按钮
-function spOperateFormatter(value, row, index) {
-    return [
-        '<a class="plus" href="javascript:void(0)" title="添加好友">',
-        '<i class="glyphicon glyphicon-plus"></i>',
-        '</a>'
-
-    ].join('');
-}
-//搜索用户表格每行按钮单击事件
-window.spOperateEvents = {
-    'click .plus': function (e, value, row, index) {
-
-        $('#af_to_account').val(row.To_Account);
-
-        //重新获取对方的加好友方式
-        searchProfileAllowTypeByUserId(row.To_Account, function (allowType) {
-
-            $('#af_allow_type').val(allowType);
-            webim.Log.info(allowType);
-            if (allowType == null) {
-                alert('获取对方加好友设置失败');
-                return;
-            }
-            if (allowType == '拒绝任何人') {
-                alert('对方拒绝任何人加好友，无法加对方为好友');
-                return;
-            }
-
-            if (allowType == '允许任何人') {
-                applyAddFriend();
-            } else {
-                $("#af_add_wording").val('你好，我想和你成为朋友~~');
-                $('#add_friend_dialog').modal('show');
-            }
-        }, function (errmsg) {
-            alert(errmsg);
-        });
-
-    }
-};
-//初始化搜索用户表格
-function initSearchProfileTable(data) {
-    $('#search_profile_table').bootstrapTable({
-        method: 'get',
-        cache: false,
-        height: 500,
-        striped: true,
-        pagination: true,
-        pageSize: pageSize,
-        pageNumber: 1,
-        pageList: [10, 20, 50, 100],
-        search: true,
-        showColumns: true,
-        clickToSelect: true,
-        columns: [
-            {field: "To_Account", title: "账号", align: "center", valign: "middle", sortable: "true"},
-            {field: "Nick", title: "昵称", align: "center", valign: "middle", sortable: "true"},
-            {field: "Gender", title: "性别", align: "center", valign: "middle", sortable: "true"},
-            {field: "AllowType", title: "加好友设置", align: "center", valign: "middle", sortable: "true", visible: false},
-            {field: "Image", title: "头像地址", align: "center", valign: "middle", sortable: "true", visible: false},
-            {
-                field: "spOperate",
-                title: "操作",
-                align: "center",
-                valign: "middle",
-                formatter: "spOperateFormatter",
-                events: "spOperateEvents"
-            }
-        ],
-        data: data,
-        formatNoMatches: function () {
-            return '无符合条件的记录';
-        }
-    });
-}
 //搜索用户
 var searchProfileByUserId = function () {
 
@@ -330,45 +256,29 @@ var searchProfileAllowTypeByUserId = function (to_account, cbok, cberr) {
 };
 
 //设置个人资料
-var setProfilePortrait = function () {
-
-    var image=$("#spp_image").val();
-
-    if ($("#spp_nick").val().length == 0) {
-        alert('请输入昵称');
-        return;
-    }
-    if (webim.Tool.trimStr($("#spp_nick").val()).length == 0) {
-        alert('您输入的昵称全是空格,请重新输入');
-        return;
-    }
-    var gender = $('input[name="spp_gender_radio"]:checked').val();
-    if (!gender) {
-        alert('请选择性别');
-        return;
-    }
+var setProfilePortrait = function (data) {
     var profile_item = [
         {
             "Tag": "Tag_Profile_IM_Nick",
-            "Value": $("#spp_nick").val()
+            "Value": data[0].nick
         },
         {
-            "Tag": "Tag_Profile_IM_Gender",
-            "Value": $('input[name="spp_gender_radio"]:checked').val()
+            "Tag": "Tag_Profile_IM_Image",
+            "Value": data[0].image
         },
         {
             "Tag": "Tag_Profile_IM_AllowType",
-            "Value": $('input[name="spp_allow_type_radio"]:checked').val()
+            "Value": data[0].allowType
+        },
+        {
+            "Tag": "Tag_Profile_IM_Gender",
+            "Value": data[0].gender
+        },
+        {
+            "Tag": "Tag_Profile_IM_Location",
+            "Value": data[0].location
         }
     ];
-    if(image){//如果设置了头像URL
-        profile_item.push(
-            {
-                "Tag": "Tag_Profile_IM_Image",
-                "Value": image
-            }
-        );
-    }
     var options = {
         'ProfileItem': profile_item
     };
@@ -376,13 +286,10 @@ var setProfilePortrait = function () {
     webim.setProfilePortrait(
         options,
         function (resp) {
-            $('#set_profile_portrait_dialog').modal('hide');
-            loginInfo.identifierNick = $("#spp_nick").val();//更新昵称
-            document.getElementById("t_my_name").innerHTML = webim.Tool.formatText2Html(loginInfo.identifierNick);
-            alert('设置个人资料成功');
+        	console.log('设置个人资料成功');
         },
         function (err) {
-            alert(err.ErrorInfo);
+        	console.log(err.ErrorInfo);
         }
     );
 };

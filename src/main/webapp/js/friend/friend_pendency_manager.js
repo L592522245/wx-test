@@ -1,69 +1,6 @@
-//定义我的好友申请表格每行按钮
-function gpOperateFormatter(value, row, index) {
-    return [
-        '<a class="edit" href="javascript:void(0)" title="处理">',
-        '<i class="glyphicon glyphicon-edit"></i>',
-        '</a>',
-        '<a class="remove ml10" href="javascript:void(0)" title="删除">',
-        '<i class="glyphicon glyphicon-remove"></i>',
-        '</a>'
-
-    ].join('');
-}
-//我的好友申请表格每行的按钮点击事件
-window.gpOperateEvents = {
-    'click .edit': function (e, value, row, index) {
-
-        $("#rf_to_account").val(row.To_Account);
-        $('#response_friend_dialog').modal('show');
-
-    },
-    'click .remove': function (e, value, row, index) {
-        if (confirm("确定删除这条记录吗？")) {
-            deletePendency(row.To_Account);
-        }
-
-    }
-};
-//初始化我的好友申请表格
-function initGetPendencyTable(data) {
-    $('#get_pendency_table').bootstrapTable({
-        method: 'get',
-        cache: false,
-        height: 500,
-        striped: true,
-        pagination: true,
-        pageSize: pageSize,
-        pageNumber: 1,
-        pageList: [10, 20, 50, 100],
-        search: true,
-        showColumns: true,
-        clickToSelect: true,
-        columns: [
-            {field: "To_Account", title: "对方账号", align: "center", valign: "middle", sortable: "true", visible: false},
-            {field: "Nick", title: "对方昵称", align: "center", valign: "middle", sortable: "true"},
-            {field: "AddWording", title: "附言", align: "center", valign: "middle", sortable: "true"},
-            {field: "AddSource", title: "来源", align: "center", valign: "middle", sortable: "true", visible: false},
-            {field: "AddTime", title: "申请时间", align: "center", valign: "middle", sortable: "true"},
-            {
-                field: "gpOperate",
-                title: "操作",
-                align: "center",
-                valign: "middle",
-                formatter: "gpOperateFormatter",
-                events: "gpOperateEvents"
-            }
-        ],
-        data: data,
-        formatNoMatches: function () {
-            return '无符合条件的记录';
-        }
-    });
-}
 //读取好友申请列表
 //notifyFlag： true表示来自好友系统通知触发，false表示用户主动点击【获取好友申请】菜单
 var getPendency = function (notifyFlag) {
-    initGetPendencyTable([]);
     var options = {
         //请求发起方的帐号，一般情况下为用户本人帐号，在管理员代替用户发起请求的情况下，这里应该填写被代替的用户的帐号
         'From_Account': loginInfo.identifier,
@@ -72,7 +9,7 @@ var getPendency = function (notifyFlag) {
         //好友申请的起始时间
         'StartTime': 0,
         //分页大小，如果取值为30 则表示客户端要求服务器端每页最多返回30个好友申请
-        'MaxLimited': totalCount,
+        'MaxLimited': 30,
         //好友申请数据的版本号，用户每收到或删除一条好友申请，服务器端就自增一次好友申请数据版本号，一般传0，表示拉取最新的数据
         'LastSequence': 0
     };
@@ -80,6 +17,8 @@ var getPendency = function (notifyFlag) {
     webim.getPendency(
         options,
         function (resp) {
+        	console.log("获取好友申请列表");
+        	console.log(resp);
             var data = [];
             if (resp.UnreadPendencyCount > 0) {//存在未读未决
                 for (var i in resp.PendencyItem) {
@@ -97,12 +36,51 @@ var getPendency = function (notifyFlag) {
                         AddTime: apply_time
                     });
                 }
-                $('#get_pendency_table').bootstrapTable('load', data);
-                $('#get_pendency_dialog').modal('show');
-            } else {
-                if (!notifyFlag) {
-                    alert('没有加好友申请');
+                
+                var date = new Date();
+                var msg = "";
+                msg = '<div class="weui-cell weui-cell_access chat" onclick="chat(\'system\', \'系统通知\')">' + 
+            	    '<div class="weui-cell__hd" style="position: relative;margin-right: 10px;">' +
+            	        '<img src="img/msg-system.png" style="width: 50px;display: block;border-radius: 50%">' +
+            	        '<span class="weui-badge" style="position: absolute;top: -.4em;right: -.4em;">1</span>' +
+            	    '</div>' +
+            	    '<div class="weui-cell__bd">' +
+            	        '<p>系统消息</p>' +
+            	        '<p class="summaryInfo">' + data[0].Nick + '请求添加你为好友</p>' +
+            	    '</div>' +
+            	    '<div class="cell__rt">' + data[0].AddTime.substring(11, 16) + '</div>' +
+            	'</div>';
+                
+                if (notifyFlag) {
+                	$("#chatList").prepend(msg);
+                	var span = '<span class="weui-badge weui-badge_dot" style="position: absolute;top: -.2em;right: -.4em;"></span>';
+                	$("#tabbar-msg").append(span);
+                } else {
+                	var chatBody = $("#chatBody");
+                	var msg = '<div class="msg-time">' + data[0].AddTime.substring(11, 16) + '</div>' +
+                			  '<div id="applyAccount" class="weui-panel weui-panel_access" style="border-radius: 5px;border: 1px solid #eaeaea;" data-id="' + data[0].To_Account + '">' +
+			                    '<div class="weui-panel__bd">' +
+			                        '<div class="weui-media-box weui-media-box_text">' +
+			                            '<h4 class="weui-media-box__title">申请添加好友</h4>' +
+			                            '<p class="weui-media-box__desc">' + data[0].Nick + '请求添加你为好友</p>' +
+			                            '<p class="weui-media-box__desc">备注：' + data[0].AddWording + '</p>' +
+			                            '<ul class="weui-media-box__info">' +
+				                            '<li class="weui-media-box__info__meta">' + data[0].AddTime + '</li>' +
+				                        '</ul>' +
+			                        '</div>' +
+			                    '</div>' +
+			                    '<div class="weui-panel__ft">' +
+			                    	'<a href="javascript:void(0);" class="weui-cell weui-cell_access weui-cell_link" onclick="responseFriend()">' +
+					                    '<div class="weui-cell__bd" style="color: #1aad19">同意</div>' +
+					                    '<span class="icon-plus"></span>' +
+					                '</a>' +
+			                    '</div>' +
+			                '</div>';
+                	
+                	chatBody.append(msg);
                 }
+            } else {
+            	//alert('没有加好友申请');
             }
 
         },
@@ -143,8 +121,8 @@ var responseFriend = function () {
 
     var response_friend_item = [
         {
-            'To_Account': $("#rf_to_account").val(),
-            "ResponseAction": $('input[name="rf_action_radio"]:checked').val()//类型：Response_Action_Agree 或者 Response_Action_AgreeAndAdd
+            'To_Account': $("#applyAccount").data("id"),
+            "ResponseAction": 'Response_Action_AgreeAndAdd'//类型：Response_Action_Agree 或者 Response_Action_AgreeAndAdd
         }
     ];
     var options = {
@@ -155,21 +133,17 @@ var responseFriend = function () {
     webim.responseFriend(
         options,
         function (resp) {
-            //在表格中删除对应的行
-            $('#get_pendency_table').bootstrapTable('remove', {
-                field: 'To_Account',
-                values: [$("#rf_to_account").val()]
-            });
-            $('#response_friend_dialog').modal('hide');
 
             if (response_friend_item[0].ResponseAction == 'Response_Action_AgreeAndAdd') {
-                //getAllFriend(getAllFriendsCallbackOK);
+            	getMyFriend();
             }
 
-            alert('处理好友申请成功');
+            weui.toast('添加好友成功', 1000);
+            onSendMsg("现在我是你的好友，开始聊天吧");
+            location.hash = "";
         },
         function (err) {
-            alert(err.ErrorInfo);
+            //alert(err.ErrorInfo);
         }
     );
 
