@@ -44,3 +44,7 @@
 [INFO] [2017-11-02 11:56:32][com.test.weixin.main.MenuManager]菜单创建成功！
 [INFO] [2017-11-03 09:34:39][com.test.weixin.main.MenuManager]菜单创建成功！
 [INFO] [2017-11-03 15:03:26][com.test.weixin.main.MenuManager]菜单创建成功！
+[ERROR] [2017-11-14 10:05:17][com.test.weixin.util.WeixinUtil]创建菜单失败 errcode:42001 errmsg:access_token expired hint: [RFKCGa0078sz12!]
+[INFO] [2017-11-14 10:05:17][com.test.weixin.main.MenuManager]菜单创建失败，错误码：42001
+[INFO] [2017-11-14 10:07:06][com.test.weixin.main.MenuManager]菜单创建成功！
+[INFO] [2017-11-14 10:08:41][com.test.weixin.main.MenuManager]菜单创建成功！

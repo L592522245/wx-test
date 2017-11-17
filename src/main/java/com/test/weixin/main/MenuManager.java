@@ -62,6 +62,11 @@ public class MenuManager {
 		btn32.setName("发送模板消息");
 		btn32.setType("view");
 		btn32.setUrl(Common.HTTP + "/apiTest/sendMsg");
+		
+		CommonButton btn33 = new CommonButton();
+		btn33.setName("移动支付");
+		btn33.setType("view");
+		btn33.setUrl(Common.HTTP + "/pay");
 
 		/**
 		 * 微信： mainBtn1,mainBtn2,mainBtn3底部的三个菜单。
@@ -78,7 +83,7 @@ public class MenuManager {
 
 		ComplexButton mainBtn3 = new ComplexButton();
 		mainBtn3.setName("其他");
-		mainBtn3.setSub_button(new CommonButton[] { btn31, btn32 });
+		mainBtn3.setSub_button(new CommonButton[] { btn31, btn32, btn33 });
 
 		/**
 		 * 封装整个菜单

@@ -25,14 +25,27 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   
   <body>
   	<div class="weui-msg">
-        <div class="weui-msg__icon-area"><i class="weui-icon-warn weui-icon_msg"></i></div>
+        <div class="weui-msg__icon-area"><i class="${ iconCss } weui-icon_msg"></i></div>
         <div class="weui-msg__text-area">
-            <h2 class="weui-msg__title">登录失败</h2>
-            <p class="weui-msg__desc">请返回重新登录！</p>
+            <h2 class="weui-msg__title">${ payResult }</h2>
+            <div class="weui-form-preview__bd">
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">商户订单号</label>
+                    <span class="weui-form-preview__value">${ out_trade_no }</span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">支付宝交易号</label>
+                    <span class="weui-form-preview__value">${ trade_no }</span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">商品金额</label>
+                    <span class="weui-form-preview__value">${ total_amount }</span>
+                </div>
+            </div>
         </div>
         <div class="weui-msg__opr-area">
             <p class="weui-btn-area">
-                <a href="apiTest/oAuth" class="weui-btn weui-btn_primary">返回</a>
+                <a href="pay" class="weui-btn weui-btn_primary">返回</a>
             </p>
         </div>
     </div>
