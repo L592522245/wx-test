@@ -2,11 +2,13 @@ package com.test.weixin.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.test.weixin.main.CoreService;
 import com.test.weixin.util.CheckUtil;
+import com.test.weixin.util.MessageUtil;
 
 @Controller
 @RequestMapping("/weixin")
@@ -55,7 +58,7 @@ public class WeixinServlet extends HttpServlet {
         // 将请求、响应的编码均设置为UTF-8（防止中文乱码）
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
-
+        
         // 调用核心业务类接收消息、处理消息
         String respMsg = CoreService.processRequest(request);
 

@@ -17,6 +17,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <title>提示页</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="format-detection" content="telephone=no">
 	<link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/1.1.2/weui.min.css">
 	<link rel="stylesheet" href="css/app.css">
 	<script type="text/javascript" src="https://res.wx.qq.com/open/libs/weuijs/1.1.2/weui.min.js"></script>
@@ -34,12 +35,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <span class="weui-form-preview__value">${ out_trade_no }</span>
                 </div>
                 <div class="weui-form-preview__item">
-                    <label class="weui-form-preview__label">支付宝交易号</label>
+                    <label class="weui-form-preview__label">交易流水号</label>
                     <span class="weui-form-preview__value">${ trade_no }</span>
                 </div>
                 <div class="weui-form-preview__item">
                     <label class="weui-form-preview__label">商品金额</label>
-                    <span class="weui-form-preview__value">${ total_amount }</span>
+                    <span class="weui-form-preview__value">${ total_amount }元</span>
                 </div>
             </div>
         </div>

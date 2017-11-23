@@ -55,7 +55,6 @@ public class CoreService {
 		try {
 			// xml请求解析
 			Map<String, String> requestMap = MessageUtil.parseXml(request);
-
 			// 发送方帐号（open_id）
 			String fromUserName = requestMap.get("FromUserName");
 			// 公众帐号
@@ -216,6 +215,7 @@ public class CoreService {
                 	String longitude = requestMap.get("Longitude");
                 	String precision = requestMap.get("Precision");
                 	System.out.println("用户进入公众号时会返回用户地理信息：维度 " + latitude + "，经度 " + longitude + "，精度 " + precision);
+                	
                 	return respCont;
                 }
                 // 自定义菜单
@@ -224,7 +224,6 @@ public class CoreService {
     				String eventKey = requestMap.get("EventKey");
     				
     				if (eventKey.equals("11")) {
-    					
     					respContent = "回复以下关键字可接收不同类型的消息：\n" +
     							"1、文字;\n" + 
     							"2、图片;\n" +
@@ -245,7 +244,6 @@ public class CoreService {
     					
     					return respCont;
     				}
-    				
                 }
             }
             

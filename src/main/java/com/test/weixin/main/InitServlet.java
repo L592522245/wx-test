@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServlet;
 
 import org.springframework.stereotype.Component;
 
+import com.test.pay.unionpay.sdk.SDKConfig;
 import com.test.weixin.util.WeixinUtil;
 
 
@@ -30,5 +31,8 @@ public class InitServlet extends HttpServlet {
             // 启动定时获取access_token的线程
             new Thread(new TokenThread()).start();
         }
+        
+        // 从应用的classpath下加载acp_sdk.properties属性文件并将该属性文件中的键值对赋值到SDKConfig类中
+        SDKConfig.getConfig().loadPropertiesFromSrc();
     }
 }
